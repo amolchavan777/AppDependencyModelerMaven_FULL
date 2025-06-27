@@ -1,0 +1,34 @@
+[
+  {
+    "traceId": "1f3a5a9b",
+    "spanId": "span01",
+    "name": "GET /customers",
+    "service": "WebPortal",
+    "targetService": "CustomerService",
+    "duration_ms": 102
+  },
+  {
+    "traceId": "1f3a5a9b",
+    "spanId": "span02",
+    "name": "POST /authenticate",
+    "service": "MobileClient",
+    "targetService": "AuthGateway",
+    "duration_ms": 87
+  },
+  {
+    "traceId": "9c8e7d4a",
+    "spanId": "span03",
+    "name": "POST /notify",
+    "service": "NotificationEngine",
+    "targetService": "RabbitMQ",
+    "duration_ms": 260
+  },
+  {
+    "traceId": "d4c2f8b1",
+    "spanId": "span04",
+    "name": "GET /report",
+    "service": "AdminConsole",
+    "targetService": "AnalyticsEngine",
+    "duration_ms": 180
+  }
+]

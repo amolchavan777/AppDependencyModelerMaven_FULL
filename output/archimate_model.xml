@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/" identifier="model-1" name="Application Dependency Model">
+  <elements>
+    <element identifier="AnalyticsEngine-id" name="AnalyticsEngine" type="application-component"/>
+    <element identifier="NotificationEngine-id" name="NotificationEngine" type="application-component"/>
+    <element identifier="CustomerService-id" name="CustomerService" type="application-component"/>
+    <element identifier="CRMSystem-id" name="CRMSystem" type="application-component"/>
+    <element identifier="MonitoringAgent-id" name="MonitoringAgent" type="application-component"/>
+    <element identifier="RedisStore-id" name="RedisStore" type="application-component"/>
+    <element identifier="DataWarehouse-id" name="DataWarehouse" type="application-component"/>
+    <element identifier="Notificati-id" name="Notificati" type="application-component"/>
+    <element identifier="PushNotifier-id" name="PushNotifier" type="application-component"/>
+    <element identifier="AuthGateway-id" name="AuthGateway" type="application-component"/>
+    <element identifier="M-id" name="M" type="application-component"/>
+    <element identifier="AdminConsole-id" name="AdminConsole" type="application-component"/>
+    <element identifier="WebPortal-id" name="WebPortal" type="application-component"/>
+    <element identifier="RabbitMQ-id" name="RabbitMQ" type="application-component"/>
+    <element identifier="SessionService-id" name="SessionService" type="application-component"/>
+    <element identifier="PaymentGateway-id" name="PaymentGateway" type="application-component"/>
+    <element identifier="SearchService-id" name="SearchService" type="application-component"/>
+    <element identifier="FileStorage-id" name="FileStorage" type="application-component"/>
+    <element identifier="EmailService-id" name="EmailService" type="application-component"/>
+    <element identifier="MobileClient-id" name="MobileClient" type="application-component"/>
+  </elements>
+  <relationships>
+    <relationship identifier="rel1" source="AnalyticsEngine-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel2" source="AnalyticsEngine-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel3" source="AnalyticsEngine-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel4" source="AnalyticsEngine-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel5" source="AnalyticsEngine-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel6" source="AnalyticsEngine-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel7" source="AnalyticsEngine-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel8" source="AnalyticsEngine-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel9" source="AnalyticsEngine-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel10" source="AnalyticsEngine-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel11" source="AnalyticsEngine-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel12" source="AnalyticsEngine-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel13" source="NotificationEngine-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel14" source="NotificationEngine-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel15" source="NotificationEngine-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel16" source="NotificationEngine-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel17" source="NotificationEngine-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel18" source="NotificationEngine-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel19" source="NotificationEngine-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel20" source="NotificationEngine-id" target="RabbitMQ-id" type="flow"/>
+    <relationship identifier="rel21" source="NotificationEngine-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel22" source="NotificationEngine-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel23" source="NotificationEngine-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel24" source="NotificationEngine-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel25" source="NotificationEngine-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel26" source="CustomerService-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel27" source="CustomerService-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel28" source="CustomerService-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel29" source="CustomerService-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel30" source="CustomerService-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel31" source="CustomerService-id" target="Notificati-id" type="flow"/>
+    <relationship identifier="rel32" source="CustomerService-id" target="AuthGateway-id" type="flow"/>
+    <relationship identifier="rel33" source="CustomerService-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel34" source="CustomerService-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel35" source="CustomerService-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel36" source="CustomerService-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel37" source="CustomerService-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel38" source="CustomerService-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel39" source="CustomerService-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel40" source="CustomerService-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel41" source="CRMSystem-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel42" source="CRMSystem-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel43" source="CRMSystem-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel44" source="CRMSystem-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel45" source="CRMSystem-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel46" source="CRMSystem-id" target="AuthGateway-id" type="flow"/>
+    <relationship identifier="rel47" source="CRMSystem-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel48" source="CRMSystem-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel49" source="CRMSystem-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel50" source="CRMSystem-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel51" source="CRMSystem-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel52" source="CRMSystem-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel53" source="CRMSystem-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel54" source="MonitoringAgent-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel55" source="MonitoringAgent-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel56" source="MonitoringAgent-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel57" source="MonitoringAgent-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel58" source="MonitoringAgent-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel59" source="MonitoringAgent-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel60" source="MonitoringAgent-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel61" source="MonitoringAgent-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel62" source="MonitoringAgent-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel63" source="MonitoringAgent-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel64" source="MonitoringAgent-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel65" source="MonitoringAgent-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel66" source="MonitoringAgent-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel67" source="DataWarehouse-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel68" source="DataWarehouse-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel69" source="DataWarehouse-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel70" source="DataWarehouse-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel71" source="DataWarehouse-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel72" source="DataWarehouse-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel73" source="DataWarehouse-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel74" source="DataWarehouse-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel75" source="DataWarehouse-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel76" source="DataWarehouse-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel77" source="DataWarehouse-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel78" source="DataWarehouse-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel79" source="DataWarehouse-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel80" source="PushNotifier-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel81" source="PushNotifier-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel82" source="PushNotifier-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel83" source="PushNotifier-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel84" source="PushNotifier-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel85" source="AuthGateway-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel86" source="AuthGateway-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel87" source="AuthGateway-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel88" source="AuthGateway-id" target="SessionService-id" type="flow"/>
+    <relationship identifier="rel89" source="AuthGateway-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel90" source="AuthGateway-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel91" source="AuthGateway-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel92" source="AuthGateway-id" target="RedisStore-id" type="flow"/>
+    <relationship identifier="rel93" source="AuthGateway-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel94" source="AuthGateway-id" target="M-id" type="flow"/>
+    <relationship identifier="rel95" source="AuthGateway-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel96" source="AdminConsole-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel97" source="AdminConsole-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel98" source="AdminConsole-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel99" source="AdminConsole-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel100" source="AdminConsole-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel101" source="AdminConsole-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel102" source="AdminConsole-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel103" source="AdminConsole-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel104" source="AdminConsole-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel105" source="AdminConsole-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel106" source="AdminConsole-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel107" source="AdminConsole-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel108" source="AdminConsole-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel109" source="WebPortal-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel110" source="WebPortal-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel111" source="WebPortal-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel112" source="WebPortal-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel113" source="WebPortal-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel114" source="WebPortal-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel115" source="WebPortal-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel116" source="WebPortal-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel117" source="WebPortal-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel118" source="WebPortal-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel119" source="WebPortal-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel120" source="WebPortal-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel121" source="PaymentGateway-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel122" source="PaymentGateway-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel123" source="PaymentGateway-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel124" source="PaymentGateway-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel125" source="PaymentGateway-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel126" source="PaymentGateway-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel127" source="PaymentGateway-id" target="AuthGateway-id" type="flow"/>
+    <relationship identifier="rel128" source="PaymentGateway-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel129" source="PaymentGateway-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel130" source="PaymentGateway-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel131" source="PaymentGateway-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel132" source="PaymentGateway-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel133" source="PaymentGateway-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel134" source="PaymentGateway-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel135" source="SearchService-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel136" source="SearchService-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel137" source="SearchService-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel138" source="SearchService-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel139" source="SearchService-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel140" source="SearchService-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel141" source="SearchService-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel142" source="SearchService-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel143" source="SearchService-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel144" source="SearchService-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel145" source="SearchService-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel146" source="SearchService-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel147" source="FileStorage-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel148" source="FileStorage-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel149" source="FileStorage-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel150" source="FileStorage-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel151" source="FileStorage-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel152" source="FileStorage-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel153" source="FileStorage-id" target="Notificati-id" type="flow"/>
+    <relationship identifier="rel154" source="FileStorage-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel155" source="FileStorage-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel156" source="FileStorage-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel157" source="FileStorage-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel158" source="FileStorage-id" target="EmailService-id" type="flow"/>
+    <relationship identifier="rel159" source="FileStorage-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel160" source="EmailService-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel161" source="EmailService-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel162" source="EmailService-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel163" source="EmailService-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel164" source="EmailService-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel165" source="EmailService-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel166" source="EmailService-id" target="AuthGateway-id" type="flow"/>
+    <relationship identifier="rel167" source="EmailService-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel168" source="EmailService-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel169" source="EmailService-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel170" source="EmailService-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel171" source="EmailService-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel172" source="EmailService-id" target="MobileClient-id" type="flow"/>
+    <relationship identifier="rel173" source="MobileClient-id" target="NotificationEngine-id" type="flow"/>
+    <relationship identifier="rel174" source="MobileClient-id" target="AnalyticsEngine-id" type="flow"/>
+    <relationship identifier="rel175" source="MobileClient-id" target="CustomerService-id" type="flow"/>
+    <relationship identifier="rel176" source="MobileClient-id" target="CRMSystem-id" type="flow"/>
+    <relationship identifier="rel177" source="MobileClient-id" target="MonitoringAgent-id" type="flow"/>
+    <relationship identifier="rel178" source="MobileClient-id" target="DataWarehouse-id" type="flow"/>
+    <relationship identifier="rel179" source="MobileClient-id" target="Notificati-id" type="flow"/>
+    <relationship identifier="rel180" source="MobileClient-id" target="AuthGateway-id" type="flow"/>
+    <relationship identifier="rel181" source="MobileClient-id" target="PushNotifier-id" type="flow"/>
+    <relationship identifier="rel182" source="MobileClient-id" target="AdminConsole-id" type="flow"/>
+    <relationship identifier="rel183" source="MobileClient-id" target="WebPortal-id" type="flow"/>
+    <relationship identifier="rel184" source="MobileClient-id" target="PaymentGateway-id" type="flow"/>
+    <relationship identifier="rel185" source="MobileClient-id" target="SearchService-id" type="flow"/>
+    <relationship identifier="rel186" source="MobileClient-id" target="FileStorage-id" type="flow"/>
+    <relationship identifier="rel187" source="MobileClient-id" target="EmailService-id" type="flow"/>
+  </relationships>
+</model>

@@ -1,0 +1,13 @@
+searc435  2894  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/SearchService
+files224  2245  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/FileStorage
+notif166  2173  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/NotificationEngine
+crmsy295  2667  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/CRMSystem
+payme159  2713  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/PaymentGateway
+custo324  2697  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/CustomerService
+analy897  2971  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/AnalyticsEngine
+mobil806  2841  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/MobileClient
+email363  2450  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/EmailService
+dataw776  2378  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/DataWarehouse
+admin446  2866  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/AdminConsole
+monit830  2405  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/MonitoringAgent
+webpo897  2725  0.1  0.3  13568  3084 ?  Ss   10:01   0:00 /usr/bin/WebPortal

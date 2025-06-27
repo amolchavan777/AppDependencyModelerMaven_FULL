@@ -1,0 +1,9 @@
+[Stage: build] WebPortal: npm install
+[Stage: build] AuthGateway: mvn compile
+[Stage: test] CustomerService: mvn test
+[Stage: test] AnalyticsEngine: python3 -m unittest
+[Stage: deploy] WebPortal -> web-tier
+[Stage: deploy] AuthGateway -> edge-api
+[Stage: deploy] NotificationEngine -> messaging-queue
+[Stage: deploy] AnalyticsEngine -> analytics-tier
+[Stage: deploy] AdminConsole -> admin-tier

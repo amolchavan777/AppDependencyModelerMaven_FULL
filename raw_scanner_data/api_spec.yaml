@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  title: AuthGateway
+  version: 1.2.0
+paths:
+  /login:
+    post:
+      summary: Authenticate user
+      x-calls:
+        - CustomerService
+  /2fa/send:
+    post:
+      summary: Send 2FA token
+      x-calls:
+        - NotificationEngine
+  /session:
+    get:
+      summary: Validate session
+      x-calls:
+        - SessionService
+        - RedisStore
