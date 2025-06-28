@@ -7,9 +7,11 @@ com/modeler/app/ConfigFileAdapter.class
 com/modeler/app/PsAuxAdapter.class
 com/modeler/app/CodeDependencyAdapter.class
 com/modeler/app/OpenTelemetryAdapter.class
+com/modeler/app/TruthDiscoveryEngineEM.class
 com/modeler/app/ArchimateExporter.class
 com/modeler/app/Claim.class
 com/modeler/app/ApplicationLogAdapter.class
 com/modeler/app/Main.class
 com/modeler/app/LatentCredibilityEngine$ClaimKey.class
+com/modeler/app/GraphMLExporter.class
 com/modeler/app/LatentCredibilityEngine.class

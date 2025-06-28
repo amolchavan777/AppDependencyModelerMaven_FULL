@@ -166,12 +166,78 @@ You can add a new adapter by:
 
 ---
 
-## 📬 Contributing
+# Refactored Truth Discovery Engine (Based on Latent Truth Model with EM)
 
-This project is designed to be extensible, verifiable, and educational. PRs and feedback welcome!
+## 🔍 Goal
+
+Improve the credibility computation for claims by using a proper **Expectation-Maximization (EM)** strategy based on the Latent Truth Model (LTM), aligning it with the original research principles.
 
 ---
 
-## 📄 License
+## 🧠 Key Principles
 
-MIT License
+- Each **claim** has an unknown **truth probability**.
+- Each **source** has a trustworthiness score estimated from the data.
+- Iterative EM is used to infer:
+  - Which claims are true
+  - Which sources are reliable
+
+---
+
+## 📐 Model Parameters
+
+- Let `c` be a claim (e.g., "A depends on B")
+- Let `s` be a source
+- Let `z_c` be the latent variable: `z_c = 1` if claim is true, `0` otherwise
+- Let `t_s` be the trustworthiness of source `s` ∈ [0,1]
+
+---
+
+## 🔁 Expectation-Maximization (EM) Steps
+
+### Step 1: Initialization
+- Set all trustworthiness values `t_s = 0.9` (or random in [0.7, 1.0])
+- Set all claim probabilities `p(z_c = 1) = 0.5`
+
+### Step 2: E-Step (Estimate Truths)
+For each claim `c`, compute:
+
+```math
+p(z_c = 1) = ∏_{s ∈ supporting(c)} t_s × ∏_{s ∉ supporting(c)} (1 - t_s)
+```
+
+Normalize across both `z_c = 1` and `z_c = 0` to ensure values ∈ [0,1]
+
+### Step 3: M-Step (Update Source Trust)
+For each source `s`, update:
+
+```math
+t_s = (1 / N_s) × Σ_{c ∈ claims(s)} p(z_c = 1 if c supported by s else 1 - p(z_c = 1))
+```
+
+Where `N_s` is number of claims source `s` participated in.
+
+### Step 4: Convergence
+Repeat E-step and M-step until the change in trust scores and truth probabilities is very small (e.g., Δ < 0.001)
+
+---
+
+## ✅ Output
+- Trust score for each source ∈ [0,1]
+- Truth probability for each claim ∈ [0,1]
+- Final decision: claim is true if `p(z_c = 1) > 0.5`
+
+---
+
+## 💡 Improvements Over Old Version
+
+| Old Logic                  | New Logic                     |
+|----------------------------|-------------------------------|
+| Summed scores              | Probabilistic inference       |
+| Scores > 1.0               | Scores constrained ∈ [0,1]    |
+| All claims assumed true    | Uncertainty handled           |
+| Source always trusted more | Unreliable sources penalized  |
+| No convergence             | Proper EM convergence         |
+
+---
+
