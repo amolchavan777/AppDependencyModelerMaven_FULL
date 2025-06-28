@@ -25,6 +25,7 @@ public class LatentCredibilityEngine {
         public int hashCode() { return Objects.hash(from, to); }
     }
 
+
     /**
      * Run the truth discovery algorithm.
      *
@@ -32,7 +33,10 @@ public class LatentCredibilityEngine {
      * @param iterations number of EM iterations to perform
      * @return resolved application dependency graph
      */
-    public Map<String, Set<String>> run(List<Claim> claims, int iterations) {
+
+
+    public Map<ClaimKey, Double> computeCredibility(List<Claim> claims, int iterations) {
+
         Map<String, SourceStats> sources = new HashMap<>();
         for (Claim c : claims) sources.putIfAbsent(c.source, new SourceStats());
 
@@ -60,7 +64,14 @@ public class LatentCredibilityEngine {
             }
         }
 
+
         // Build the resulting dependency model where credibility > 0.5
+
+        return credibility;
+    }
+
+    public Map<String, Set<String>> run(List<Claim> claims, int iterations) {
+        Map<ClaimKey, Double> credibility = computeCredibility(claims, iterations);
         Map<String, Set<String>> result = new HashMap<>();
         for (Claim c : claims) {
             ClaimKey key = new ClaimKey(c.fromApp, c.toApp);

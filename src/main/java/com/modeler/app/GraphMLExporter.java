@@ -1,7 +1,10 @@
 package com.modeler.app;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -18,7 +21,7 @@ public class GraphMLExporter {
      * @throws IOException if the file cannot be written
      */
     public static void export(Map<String, Set<String>> model, String filePath) throws IOException {
-        try (FileWriter fw = new FileWriter(filePath)) {
+        try (BufferedWriter fw = Files.newBufferedWriter(Paths.get(filePath), StandardCharsets.UTF_8)) {
             fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             fw.write("<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\">\n");
             fw.write("  <graph id=\"G\" edgedefault=\"directed\">\n");
