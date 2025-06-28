@@ -17,14 +17,15 @@ public class TruthDiscoveryEngineEM {
             Map<Claim, Double> newClaimProbs = estimateTruths(claims);
             Map<String, Double> newSourceTrust = updateTrustworthiness(claims, newClaimProbs);
 
+            claimProbabilities = newClaimProbs;
+            sourceTrust = newSourceTrust;
+
             if (hasConverged(newClaimProbs, newSourceTrust)) {
                 break;
             }
-
-            claimProbabilities = newClaimProbs;
-            sourceTrust = newSourceTrust;
         }
 
+        buildResult();
         printResults();
     }
 
@@ -44,8 +45,8 @@ public class TruthDiscoveryEngineEM {
             for (Claim other : claims) {
                 if (other.fromApp.equals(c.fromApp) && other.toApp.equals(c.toApp)) {
                     double ts = sourceTrust.getOrDefault(other.source, 0.5);
-                    prodTrue *= ts;
-                    prodFalse *= (1.0 - ts);
+                    prodTrue *= Math.pow(ts, other.confidence);
+                    prodFalse *= Math.pow(1.0 - ts, other.confidence);
                 }
             }
 
@@ -57,16 +58,18 @@ public class TruthDiscoveryEngineEM {
 
     private Map<String, Double> updateTrustworthiness(List<Claim> claims, Map<Claim, Double> claimProbs) {
         Map<String, Double> trust = new HashMap<>();
-        Map<String, Integer> counts = new HashMap<>();
+        Map<String, Double> counts = new HashMap<>();
 
         for (Claim c : claims) {
             double p = claimProbs.getOrDefault(c, 0.5);
-            trust.put(c.source, trust.getOrDefault(c.source, 0.0) + p);
-            counts.put(c.source, counts.getOrDefault(c.source, 0) + 1);
+            double weight = c.confidence;
+            trust.put(c.source, trust.getOrDefault(c.source, 0.0) + p * weight);
+            counts.put(c.source, counts.getOrDefault(c.source, 0.0) + weight);
         }
 
         for (String src : trust.keySet()) {
-            trust.put(src, trust.get(src) / counts.get(src));
+            double total = counts.getOrDefault(src, 1.0);
+            trust.put(src, trust.get(src) / total);
         }
         return trust;
     }
@@ -97,12 +100,19 @@ public class TruthDiscoveryEngineEM {
             System.out.printf("%s: %.3f%n", e.getKey(), e.getValue());
         }
     }
-       // Add this field to store the result if not already present
+
+    private void buildResult() {
+        result.clear();
+        for (Map.Entry<Claim, Double> e : claimProbabilities.entrySet()) {
+            Claim c = e.getKey();
+            if (c.exists && e.getValue() > 0.5) {
+                result.computeIfAbsent(c.fromApp, k -> new HashSet<>()).add(c.toApp);
+            }
+        }
+    }
+
     private Map<String, Set<String>> result = new HashMap<>();
 
-    // After running EM, populate the result map accordingly in your runEM method
-
-    // Add this method to allow access to the result
     public Map<String, Set<String>> getResult() {
         return result;
     }

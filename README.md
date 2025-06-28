@@ -39,6 +39,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 ## 🧠 Truth Discovery Engine
 
 - Uses an **Expectation-Maximization (EM)** algorithm based on the **Latent Truth Model (LTM)**.
+- Claim confidence values weight each source's impact during inference.
 - Each claim (dependency between two apps) is assigned:
   - A source
   - A confidence level
@@ -200,7 +201,7 @@ Improve the credibility computation for claims by using a proper **Expectation-M
 - Set all claim probabilities `p(z_c = 1) = 0.5`
 
 ### Step 2: E-Step (Estimate Truths)
-For each claim `c`, compute:
+For each claim `c`, compute (weighted by the confidence of each supporting claim):
 
 ```math
 p(z_c = 1) = ∏_{s ∈ supporting(c)} t_s × ∏_{s ∉ supporting(c)} (1 - t_s)
@@ -209,7 +210,7 @@ p(z_c = 1) = ∏_{s ∈ supporting(c)} t_s × ∏_{s ∉ supporting(c)} (1 - t_s
 Normalize across both `z_c = 1` and `z_c = 0` to ensure values ∈ [0,1]
 
 ### Step 3: M-Step (Update Source Trust)
-For each source `s`, update:
+For each source `s`, update (weighted by the confidence of the claims it provided):
 
 ```math
 t_s = (1 / N_s) × Σ_{c ∈ claims(s)} p(z_c = 1 if c supported by s else 1 - p(z_c = 1))
