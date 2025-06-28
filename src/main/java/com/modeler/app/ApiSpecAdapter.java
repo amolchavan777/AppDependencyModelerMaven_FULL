@@ -4,9 +4,6 @@ import java.io.*;
 import java.util.*;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
-
-import ch.qos.logback.core.util.Loader;
-
 import org.yaml.snakeyaml.LoaderOptions;
 
 public class ApiSpecAdapter {

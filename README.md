@@ -86,9 +86,11 @@ A file will be created:
 
 ```
 output/archimate_model.xml
+output/dependency_graph.graphml
 ```
 
-You can import this into tools like **Archi** or **BiZZdesign**.
+You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
+The GraphML file works with graph tools such as **yEd** or **Gephi**.
 
 ---
 

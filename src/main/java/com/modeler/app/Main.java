@@ -18,5 +18,8 @@ public class Main {
 
         ArchimateExporter.export(result, "output/archimate_model.xml");
         System.out.println("\n📄 Archimate model exported to output/archimate_model.xml");
+
+        GraphMLExporter.export(result, "output/dependency_graph.graphml");
+        System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
     }
 }
