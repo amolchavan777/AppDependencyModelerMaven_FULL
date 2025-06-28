@@ -18,4 +18,18 @@ public class LatentCredibilityEngineTest {
         assertEquals(Set.of("B"), result.get("A"));
         assertEquals(Set.of("C"), result.get("B"));
     }
+
+    @Test
+    public void credibilityScoresMatchExpectation() {
+        List<Claim> claims = List.of(
+            new Claim("s1", "A", "B", true, 1.0),
+            new Claim("s2", "A", "B", true, 0.5),
+            new Claim("s3", "A", "B", false, 0.5)
+        );
+        LatentCredibilityEngine engine = new LatentCredibilityEngine();
+        Map<LatentCredibilityEngine.ClaimKey, Double> cred = engine.computeCredibility(claims, 1);
+        Double val = cred.get(new LatentCredibilityEngine.ClaimKey("A", "B"));
+        assertNotNull(val, "Credibility should be calculated");
+        assertEquals(1.3, val, 1e-6);
+    }
 }
