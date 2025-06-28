@@ -3,7 +3,19 @@ package com.modeler.app;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Parses GitLab CI/CD pipeline logs. Lines containing a dependency notation
+ * like {@code [Stage] ServiceA -> ServiceB} are converted into claims.
+ */
 public class GitlabCiAdapter {
+
+    /**
+     * Extract dependency claims from a GitLab pipeline log file.
+     *
+     * @param filePath path to the log
+     * @return list of claims from the pipeline output
+     * @throws IOException if the file cannot be read
+     */
     public static List<Claim> parse(String filePath) throws IOException {
         List<Claim> claims = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {

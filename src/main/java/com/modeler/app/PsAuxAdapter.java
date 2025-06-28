@@ -3,7 +3,16 @@ package com.modeler.app;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Adapter that infers potential interactions by scanning the output of
+ * {@code ps aux}. Every executable found under {@code /usr/bin/} is assumed to
+ * potentially communicate with every other discovered executable.
+ */
 public class PsAuxAdapter {
+
+    /**
+     * Parse a ps aux snapshot and generate fully connected claims.
+     */
     public static List<Claim> parse(String filePath) throws IOException {
         Set<String> apps = new HashSet<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {

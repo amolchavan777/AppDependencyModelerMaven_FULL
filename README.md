@@ -121,6 +121,41 @@ The ArchiMate model includes:
 - Grouped logical clusters for visualization
 
 ---
+## 🏁 Example Walkthrough
+
+1. Run `mvn clean compile exec:java -Dexec.mainClass="com.modeler.app.Main"`.
+2. Review the list of normalized claims printed to the console.
+3. After several iterations the final dependency graph is shown.
+4. Two visualization files are produced in the `output/` directory.
+
+---
+
+## 📝 Data File Formats
+
+| File | Description |
+|------|-------------|
+| `wireshark.txt` | Simplified packet capture with lines containing `IP` flows. |
+| `ps_aux.txt` | Snapshot of running processes; executables under `/usr/bin/` are treated as apps. |
+| `config.ini` | INI file with `name=` and `dependencies=` entries. |
+| `application.log` | Log lines with `connected to` for runtime interactions. |
+| `code_dependencies.txt` | One `from -> to` dependency per line. |
+| `otel_traces.json` | JSON array of spans with `service` and `targetService`. |
+| `gitlab_pipeline.log` | CI/CD log lines containing `ServiceA -> ServiceB`. |
+| `api_spec.yaml` | OpenAPI spec using custom `x-calls` to denote calls. |
+
+---
+
+## 🧪 Running Tests
+
+Execute the unit tests using Maven:
+
+```bash
+mvn test
+```
+
+All tests should pass and provide a quick sanity check of the adapters and the credibility engine.
+
+---
 
 ## ➕ Extending with New Sources
 
