@@ -6,7 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Reads a simple INI-style configuration file. The file is expected to contain
+ * a {@code name=} field for the application and a comma-separated
+ * {@code dependencies=} list.
+ */
 public class ConfigFileAdapter {
+
+    /**
+     * Parse the configuration file and produce dependency claims.
+     *
+     * @param filePath path to the INI file
+     * @return list of claims defined in the config
+     * @throws IOException if the file is not readable
+     */
     public static List<Claim> parse(String filePath) throws IOException {
         List<Claim> claims = new ArrayList<>();
         String fromApp = "";

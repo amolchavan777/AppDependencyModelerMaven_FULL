@@ -7,7 +7,18 @@ import java.nio.file.Paths;
 import java.util.*;
 import org.json.*;
 
+/**
+ * Adapter for OpenTelemetry trace exports. Each span entry is expected to
+ * contain a {@code service} and a {@code targetService} field.
+ */
 public class OpenTelemetryAdapter {
+
+    /**
+     * Read a JSON array of spans and convert them into {@link Claim}s.
+     *
+     * @param filePath path to a JSON trace dump
+     * @return claims derived from the spans
+     */
     public static List<Claim> parse(String filePath) throws IOException {
         List<Claim> claims = new ArrayList<>();
         String content = Files.readString(Paths.get(filePath), StandardCharsets.UTF_8);

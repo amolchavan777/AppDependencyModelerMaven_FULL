@@ -2,12 +2,19 @@ package com.modeler.app;
 
 import java.util.*;
 
+/**
+ * Implements a very small Expectation-Maximization style algorithm based on
+ * the Latent Truth Model. Source reliability is iteratively refined while
+ * aggregating claims into a final dependency model.
+ */
 public class LatentCredibilityEngine {
+    /** Per-source statistics used while iterating. */
     static class SourceStats {
         double trust = 0.8;
         double totalWeight = 0.0;
     }
 
+    /** Helper key representing a unique dependency claim. */
     static class ClaimKey {
         String from, to;
         public ClaimKey(String from, String to) { this.from = from; this.to = to; }
@@ -18,19 +25,32 @@ public class LatentCredibilityEngine {
         public int hashCode() { return Objects.hash(from, to); }
     }
 
+
+    /**
+     * Run the truth discovery algorithm.
+     *
+     * @param claims     all dependency claims from every adapter
+     * @param iterations number of EM iterations to perform
+     * @return resolved application dependency graph
+     */
+
+
     public Map<ClaimKey, Double> computeCredibility(List<Claim> claims, int iterations) {
+
         Map<String, SourceStats> sources = new HashMap<>();
         for (Claim c : claims) sources.putIfAbsent(c.source, new SourceStats());
 
         Map<ClaimKey, Double> credibility = new HashMap<>();
         for (int it = 0; it < iterations; it++) {
             credibility.clear();
+            // Expectation step: accumulate credibility for each dependency
             for (Claim c : claims) {
                 ClaimKey key = new ClaimKey(c.fromApp, c.toApp);
                 double t = sources.get(c.source).trust;
                 double score = c.exists ? t * c.confidence : (1 - t) * c.confidence;
                 credibility.merge(key, score, Double::sum);
             }
+            // Maximization step: update source trust using the accumulated scores
             for (var entry : sources.entrySet()) {
                 double weighted = 0.0, total = 0.0;
                 for (Claim c : claims) {
@@ -43,6 +63,10 @@ public class LatentCredibilityEngine {
                 entry.getValue().trust = total > 0 ? weighted / total : 0.5;
             }
         }
+
+
+        // Build the resulting dependency model where credibility > 0.5
+
         return credibility;
     }
 

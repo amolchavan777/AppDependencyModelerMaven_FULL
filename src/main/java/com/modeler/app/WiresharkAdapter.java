@@ -6,7 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Parses simplified Wireshark packet logs to infer network-based
+ * application interactions.
+ */
 public class WiresharkAdapter {
+
+    /**
+     * Convert packet capture text output into dependency claims.
+     *
+     * @param filePath path to the packet capture file
+     * @return list of claims representing observed network flows
+     */
     public static List<Claim> parse(String filePath) throws IOException {
         List<Claim> claims = new ArrayList<>();
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.UTF_8)) {

@@ -3,7 +3,17 @@ package com.modeler.app;
 import java.util.*;
 import java.io.*;
 
+/**
+ * Utility for invoking every adapter and aggregating their results into a
+ * single list of normalized claims.
+ */
 public class Normalizer {
+
+    /**
+     * Collect dependency claims from all available adapters.
+     *
+     * @return a unified list of claims
+     */
     public static List<Claim> collectAllClaims() throws IOException {
         List<Claim> claims = new ArrayList<>();
         claims.addAll(WiresharkAdapter.parse("raw_scanner_data/wireshark.txt"));
