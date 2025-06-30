@@ -35,9 +35,7 @@ public class Main {
         //engine.run(allClaims);
 
 
-        System.out.println("\n✅ Final Application Dependency Model:");
-        for (var entry : result.entrySet())
-            System.out.println(entry.getKey() + " depends on " + entry.getValue());
+        printDependencySummary(result);
 
             // Export only the dependencies that survived truth discovery
             ArchimateExporter.export(result, "output/archimate_model.xml");
@@ -45,12 +43,39 @@ public class Main {
 
             GraphMLExporter.export(result, "output/dependency_graph.graphml");
             System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
-        
-    } catch (Exception e) {
+
+        } catch (Exception e) {
             System.err.println("Error initializing Normalizer: " + e.getMessage());
             e.printStackTrace();
-            
+
         }
-      
+
+    }
+
+    /**
+     * Print dependencies in an adjacency-list style with a summary line.
+     */
+    private static void printDependencySummary(Map<String, Set<String>> deps) {
+        System.out.println("\n✅ Final Application Dependency Model:");
+        List<String> apps = new ArrayList<>(deps.keySet());
+        Collections.sort(apps);
+
+        int total = 0;
+        for (String app : apps) {
+            System.out.println(app);
+            Set<String> targets = deps.getOrDefault(app, Collections.emptySet());
+            if (targets.isEmpty()) {
+                System.out.println("  -> (no outgoing dependencies)");
+            } else {
+                List<String> sorted = new ArrayList<>(targets);
+                Collections.sort(sorted);
+                for (String t : sorted) {
+                    System.out.println("  -> " + t);
+                    total++;
+                }
+            }
+        }
+
+        System.out.printf("Summary: %d apps, %d total dependency links%n", apps.size(), total);
     }
 }
