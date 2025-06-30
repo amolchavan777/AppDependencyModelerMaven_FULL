@@ -18,6 +18,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
+- Console histograms summarize dependency fan-in and fan-out
 
 ---
 
@@ -83,13 +84,18 @@ mvn exec:java -Dexec.mainClass="com.modeler.app.Main"
 
 ### 4. Output
 
-A file will be created:
+Files will be created:
 
 ```
 output/archimate_model.xml
 output/dependency_graph.graphml
 output/dependency_graph.json
+output/dependency_summary.csv
+output/dependency_edges.csv
+
 ```
+
+The console also prints ASCII histograms summarizing outgoing and incoming dependency counts per application.
 
 You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
 The GraphML file works with graph tools such as **yEd** or **Gephi**.
@@ -134,6 +140,8 @@ The ArchiMate model includes:
 2. Review the list of normalized claims printed to the console.
 3. After several iterations the final dependency graph is shown.
 4. Three visualization files are produced in the `output/` directory.
+5. Four files are produced in the `output/` directory (two visualization and two CSV summaries).
+
 
 ---
 
