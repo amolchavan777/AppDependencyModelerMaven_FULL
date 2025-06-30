@@ -14,12 +14,54 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 
 - Multi-source dependency discovery
 - Truth discovery using Latent Truth Model (LTM)
-- ArchiMate XML export for visualization
+- ArchiMate XML and GraphML exports for visualization
+- JSON graph export for web visualizers
+- CSV summaries of dependencies and edges
+- Multi-sheet Excel audit workbook export
+- Interactive web dashboard
+- Console histograms summarize dependency fan-in and fan-out
+- Dependency metrics and analytics
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
-- Console histograms summarize dependency fan-in and fan-out
-- Multi-sheet Excel audit workbook export
+## 📜 Changelog (last 48 hours)
+
+The following log summarizes recent commits and the thinking behind them. Times
+are taken from the Git history and use the `+03:00` timezone recorded there.
+
+- **2025-07-01 01:43** – *Excel audit export*
+  - Introduced `ExcelExporter.java` and supporting Maven dependencies to generate
+    `application_dependency_audit.xlsx` from EM results.
+  - Allows auditors to review dependency evidence in a structured workbook.
+
+- **2025-07-01 01:15** – *Interactive web dashboard*
+  - Added `DashboardExporter.java` with a bundled `index.html` for local graph
+    exploration.
+  - Lets users inspect dependencies without external visualization tools.
+
+- **2025-07-01 00:51** – *JSON graph export*
+  - Implemented `JsonExporter.java` and wired it into `Main`.
+  - Provides machine-readable output for JavaScript-based visualizers.
+
+- **2025-07-01 00:37** – *CSV summary exporter*
+  - Created `CsvExporter.java` plus basic tests and documentation updates.
+  - Enables spreadsheet-style analysis of dependencies and edges.
+
+- **2025-07-01 00:35** – *Dependency metrics analytics*
+  - Added `DependencyMetrics.java` to compute fan-in/out statistics.
+  - Helps identify heavily coupled services.
+
+- **2025-07-01 00:32** – *Improved console summaries*
+  - Enhanced `Main` output with clearer layout and ASCII histograms.
+  - Makes terminal results easier to interpret.
+
+- **2025-06-30 23:50** – *Robust EM algorithm*
+  - Updated `TruthDiscoveryEngineEM` to handle negative and missing claims.
+  - Ensures the inference engine remains stable with conflicting evidence.
+
+- **2025-06-30 23:37** – *Exporters use EM inference*
+  - Refactored exporters to rely on the EM-resolved graph.
+  - Keeps all output formats consistent with truth-discovered dependencies.
 
 ---
 
