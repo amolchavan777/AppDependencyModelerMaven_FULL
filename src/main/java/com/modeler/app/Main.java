@@ -50,7 +50,13 @@ public class Main {
             GraphMLExporter.export(result, "output/dependency_graph.graphml");
             System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
 
+//codex/add-csv-export-for-dependency-summaries
+            CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");
+            System.out.println("📄 CSV summaries exported to output/dependency_*.csv");
+        
+
         } catch (Exception e) {
+
             System.err.println("Error initializing Normalizer: " + e.getMessage());
             e.printStackTrace();
 

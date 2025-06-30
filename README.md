@@ -83,11 +83,13 @@ mvn exec:java -Dexec.mainClass="com.modeler.app.Main"
 
 ### 4. Output
 
-A file will be created:
+Files will be created:
 
 ```
 output/archimate_model.xml
 output/dependency_graph.graphml
+output/dependency_summary.csv
+output/dependency_edges.csv
 ```
 
 You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
@@ -127,7 +129,7 @@ The ArchiMate model includes:
 1. Run `mvn clean compile exec:java -Dexec.mainClass="com.modeler.app.Main"`.
 2. Review the list of normalized claims printed to the console.
 3. After several iterations the final dependency graph is shown.
-4. Two visualization files are produced in the `output/` directory.
+4. Four files are produced in the `output/` directory (two visualization and two CSV summaries).
 
 ---
 
