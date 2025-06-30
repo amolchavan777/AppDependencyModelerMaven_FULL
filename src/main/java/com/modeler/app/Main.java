@@ -7,6 +7,8 @@ import java.io.*;
 import com.modeler.app.JsonExporter;
 import com.modeler.app.DashboardExporter;
 import com.modeler.app.ExcelExporter;
+import com.modeler.app.InitialAggregator;
+import com.modeler.app.CoverageUtil;
 
 
 // Histogram utilities
@@ -35,6 +37,9 @@ public class Main {
         for (Claim c : allClaims) System.out.println(c);
         System.out.println("Collected " + allClaims.size() + " claims.");
         System.out.println("Running Latent Truth Model with EM...\n");
+
+        Map<InitialAggregator.Pair, Double> initialAgg = InitialAggregator.aggregate(allClaims);
+        Map<String, Integer> coverage = CoverageUtil.computeCoverage(allClaims);
 
         // Resolve conflicting claims using the latent credibility engine
             TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
@@ -77,8 +82,10 @@ public class Main {
 
             // Export a multi-sheet Excel workbook for auditing
             ExcelExporter.export(allClaims,
+                    initialAgg,
                     engine.getClaimProbabilities(),
                     engine.getSourceTrust(),
+                    coverage,
                     result,
                     "output/application_dependency_audit.xlsx");
             System.out.println("📄 Excel audit workbook exported to output/application_dependency_audit.xlsx");
