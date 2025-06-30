@@ -3,6 +3,9 @@ package com.modeler.app;
 import java.util.*;
 import java.io.*;
 
+// For calculating and printing dependency graph metrics
+import com.modeler.app.DependencyMetrics;
+
 /**
  * Entry point for the Application Dependency Modeler demo. It collects data
  * from all adapters, runs the truth discovery engine and exports the results
@@ -38,6 +41,9 @@ public class Main {
         System.out.println("\n✅ Final Application Dependency Model:");
         for (var entry : result.entrySet())
             System.out.println(entry.getKey() + " depends on " + entry.getValue());
+
+        // Print dependency analytics before exporting
+        DependencyMetrics.printMetrics(result);
 
             // Export only the dependencies that survived truth discovery
             ArchimateExporter.export(result, "output/archimate_model.xml");
