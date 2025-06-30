@@ -3,6 +3,9 @@ package com.modeler.app;
 import java.util.*;
 import java.io.*;
 
+// JSON export
+import com.modeler.app.JsonExporter;
+
 
 // Histogram utilities
 import com.modeler.app.DependencyHistogram;
@@ -14,7 +17,7 @@ import com.modeler.app.DependencyMetrics;
 /**
  * Entry point for the Application Dependency Modeler demo. It collects data
  * from all adapters, runs the truth discovery engine and exports the results
- * to ArchiMate and GraphML formats.
+ * to ArchiMate, GraphML and JSON formats.
  */
 
 public class Main {
@@ -59,9 +62,14 @@ public class Main {
             GraphMLExporter.export(result, "output/dependency_graph.graphml");
             System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
 
+
+            JsonExporter.export(result, "output/dependency_graph.json");
+            System.out.println("📄 JSON graph exported to output/dependency_graph.json");
+
 //codex/add-csv-export-for-dependency-summaries
             CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");
             System.out.println("📄 CSV summaries exported to output/dependency_*.csv");
+
         
 
         } catch (Exception e) {
