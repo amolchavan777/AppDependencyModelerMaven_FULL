@@ -19,6 +19,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - Rich sample dataset included
 - Maven project structure
 - Console histograms summarize dependency fan-in and fan-out
+- Multi-sheet Excel audit workbook export
 
 ---
 
@@ -92,6 +93,7 @@ output/dependency_graph.graphml
 output/dependency_graph.json
 output/dependency_summary.csv
 output/dependency_edges.csv
+output/application_dependency_audit.xlsx
 output/index.html
 
 ```

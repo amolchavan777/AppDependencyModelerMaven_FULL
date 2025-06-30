@@ -6,6 +6,7 @@ import java.io.*;
 // JSON export
 import com.modeler.app.JsonExporter;
 import com.modeler.app.DashboardExporter;
+import com.modeler.app.ExcelExporter;
 
 
 // Histogram utilities
@@ -73,6 +74,14 @@ public class Main {
 //codex/add-csv-export-for-dependency-summaries
             CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");
             System.out.println("📄 CSV summaries exported to output/dependency_*.csv");
+
+            // Export a multi-sheet Excel workbook for auditing
+            ExcelExporter.export(allClaims,
+                    engine.getClaimProbabilities(),
+                    engine.getSourceTrust(),
+                    result,
+                    "output/application_dependency_audit.xlsx");
+            System.out.println("📄 Excel audit workbook exported to output/application_dependency_audit.xlsx");
 
         
 
