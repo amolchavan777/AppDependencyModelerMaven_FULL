@@ -3,10 +3,13 @@ package com.modeler.app;
 import java.util.*;
 import java.io.*;
 
+// JSON export
+import com.modeler.app.JsonExporter;
+
 /**
  * Entry point for the Application Dependency Modeler demo. It collects data
  * from all adapters, runs the truth discovery engine and exports the results
- * to ArchiMate and GraphML formats.
+ * to ArchiMate, GraphML and JSON formats.
  */
 
 public class Main {
@@ -45,6 +48,9 @@ public class Main {
 
             GraphMLExporter.export(result, "output/dependency_graph.graphml");
             System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
+
+            JsonExporter.export(result, "output/dependency_graph.json");
+            System.out.println("📄 JSON graph exported to output/dependency_graph.json");
         
     } catch (Exception e) {
             System.err.println("Error initializing Normalizer: " + e.getMessage());

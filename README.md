@@ -88,6 +88,7 @@ A file will be created:
 ```
 output/archimate_model.xml
 output/dependency_graph.graphml
+output/dependency_graph.json
 ```
 
 You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
@@ -110,6 +111,11 @@ Make sure these are in your `pom.xml`:
   <artifactId>json</artifactId>
   <version>20231013</version>
 </dependency>
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.16.1</version>
+</dependency>
 ```
 
 ---
@@ -127,7 +133,7 @@ The ArchiMate model includes:
 1. Run `mvn clean compile exec:java -Dexec.mainClass="com.modeler.app.Main"`.
 2. Review the list of normalized claims printed to the console.
 3. After several iterations the final dependency graph is shown.
-4. Two visualization files are produced in the `output/` directory.
+4. Three visualization files are produced in the `output/` directory.
 
 ---
 
