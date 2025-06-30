@@ -45,8 +45,14 @@ public class TruthDiscoveryEngineEM {
             for (Claim other : claims) {
                 if (other.fromApp.equals(c.fromApp) && other.toApp.equals(c.toApp)) {
                     double ts = sourceTrust.getOrDefault(other.source, 0.5);
-                    prodTrue *= Math.pow(ts, other.confidence);
-                    prodFalse *= Math.pow(1.0 - ts, other.confidence);
+                    if (other.exists) {
+                        prodTrue  *= Math.pow(ts, other.confidence);
+                        prodFalse *= Math.pow(1.0 - ts, other.confidence);
+                    } else {
+                        // Negative claim: trusted sources should push probability toward false
+                        prodTrue  *= Math.pow(1.0 - ts, other.confidence);
+                        prodFalse *= Math.pow(ts, other.confidence);
+                    }
                 }
             }
 
@@ -63,7 +69,8 @@ public class TruthDiscoveryEngineEM {
         for (Claim c : claims) {
             double p = claimProbs.getOrDefault(c, 0.5);
             double weight = c.confidence;
-            trust.put(c.source, trust.getOrDefault(c.source, 0.0) + p * weight);
+            double contribution = c.exists ? p : (1.0 - p);
+            trust.put(c.source, trust.getOrDefault(c.source, 0.0) + contribution * weight);
             counts.put(c.source, counts.getOrDefault(c.source, 0.0) + weight);
         }
 
