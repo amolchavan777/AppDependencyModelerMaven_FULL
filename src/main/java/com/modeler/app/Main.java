@@ -5,6 +5,7 @@ import java.io.*;
 
 // JSON export
 import com.modeler.app.JsonExporter;
+import com.modeler.app.DashboardExporter;
 
 
 // Histogram utilities
@@ -65,6 +66,9 @@ public class Main {
 
             JsonExporter.export(result, "output/dependency_graph.json");
             System.out.println("📄 JSON graph exported to output/dependency_graph.json");
+
+            DashboardExporter.export("output");
+            System.out.println("📄 Dashboard available at output/index.html");
 
 //codex/add-csv-export-for-dependency-summaries
             CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");

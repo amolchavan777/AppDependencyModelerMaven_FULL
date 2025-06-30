@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Application Dependency Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; }
+  #cy {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ccc;
+  }
+</style>
+<script src="https://unpkg.com/cytoscape@3.27.0/dist/cytoscape.min.js"></script>
+</head>
+<body>
+<h1>Application Dependency Graph</h1>
+<div id="cy"></div>
+<script>
+fetch('dependency_graph.json')
+  .then(res => res.json())
+  .then(data => {
+    const elements = [];
+    data.nodes.forEach(n => elements.push({ data: { id: n.id, label: n.id } }));
+    data.edges.forEach(e => elements.push({ data: { source: e.source, target: e.target } }));
+
+    cytoscape({
+      container: document.getElementById('cy'),
+      elements: elements,
+      style: [
+        { selector: 'node', style: { 'label': 'data(label)', 'background-color': '#0074D9', 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center' } },
+        { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'width': 2, 'line-color': '#aaa', 'target-arrow-color': '#aaa' } }
+      ],
+      layout: { name: 'cose' }
+    });
+  });
+</script>
+</body>
+</html>

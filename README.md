@@ -92,6 +92,7 @@ output/dependency_graph.graphml
 output/dependency_graph.json
 output/dependency_summary.csv
 output/dependency_edges.csv
+output/index.html
 
 ```
 
@@ -99,6 +100,7 @@ The console also prints ASCII histograms summarizing outgoing and incoming depen
 
 You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
 The GraphML file works with graph tools such as **yEd** or **Gephi**.
+For a quick interactive view, open `output/index.html` in your browser.
 
 ---
 
