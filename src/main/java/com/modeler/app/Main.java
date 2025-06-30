@@ -39,19 +39,12 @@ public class Main {
         for (var entry : result.entrySet())
             System.out.println(entry.getKey() + " depends on " + entry.getValue());
 
-            // Transform list to dependency model for ArchimateExporter
-            Map<String, Set<String>> model = new HashMap<>();
-            for (Claim claim : allClaims) {
-                if (claim.exists) {
-                    model.computeIfAbsent(claim.fromApp, k -> new HashSet<>()).add(claim.toApp);
-                }
-            }
-        // Produce output files for visualization
-        ArchimateExporter.export(model, "output/archimate_model.xml");
-        System.out.println("\n📄 Archimate model exported to output/archimate_model.xml");
+            // Export only the dependencies that survived truth discovery
+            ArchimateExporter.export(result, "output/archimate_model.xml");
+            System.out.println("\n📄 Archimate model exported to output/archimate_model.xml");
 
-        GraphMLExporter.export(model, "output/dependency_graph.graphml");
-        System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
+            GraphMLExporter.export(result, "output/dependency_graph.graphml");
+            System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
         
     } catch (Exception e) {
             System.err.println("Error initializing Normalizer: " + e.getMessage());
