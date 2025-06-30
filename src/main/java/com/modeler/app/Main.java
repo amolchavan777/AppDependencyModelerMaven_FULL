@@ -3,8 +3,13 @@ package com.modeler.app;
 import java.util.*;
 import java.io.*;
 
+
+// Histogram utilities
+import com.modeler.app.DependencyHistogram;
+
 // For calculating and printing dependency graph metrics
 import com.modeler.app.DependencyMetrics;
+
 
 /**
  * Entry point for the Application Dependency Modeler demo. It collects data
@@ -42,6 +47,10 @@ public class Main {
 
         // Print dependency analytics before exporting
         DependencyMetrics.printMetrics(result);
+
+        // Display simple histograms of dependency fan-out and fan-in
+        DependencyHistogram.printOutgoingHistogram(result);
+        DependencyHistogram.printIncomingHistogram(result);
 
             // Export only the dependencies that survived truth discovery
             ArchimateExporter.export(result, "output/archimate_model.xml");
