@@ -123,4 +123,22 @@ public class TruthDiscoveryEngineEM {
     public Map<String, Set<String>> getResult() {
         return result;
     }
+
+    /**
+     * Access the final truth probability computed for each claim.
+     *
+     * @return map of Claim -> probability that the claim is true
+     */
+    public Map<Claim, Double> getClaimProbabilities() {
+        return claimProbabilities;
+    }
+
+    /**
+     * Access the trustworthiness score for each source after EM convergence.
+     *
+     * @return map of source name -> trust score
+     */
+    public Map<String, Double> getSourceTrust() {
+        return sourceTrust;
+    }
 }
