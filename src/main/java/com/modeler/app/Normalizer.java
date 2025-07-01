@@ -26,4 +26,29 @@ public class Normalizer {
         claims.addAll(ApiSpecAdapter.parse("raw_scanner_data/api_spec.yaml"));
         return claims;
     }
+
+    /** Mapping of alternate names to canonical service names. */
+    public static Map<String,String> getAliasMap() {
+        Map<String,String> map = new LinkedHashMap<>();
+        map.put("web-tier", "WebPortal");
+        map.put("edge-api", "AuthGateway");
+        map.put("messaging-queue", "NotificationEngine");
+        map.put("analytics-tier", "AnalyticsEngine");
+        map.put("admin-tier", "AdminConsole");
+        return map;
+    }
+
+    /**
+     * Apply the alias map to produce normalized claims.
+     */
+    public static List<Claim> normalizeClaims(List<Claim> raw) {
+        Map<String,String> map = getAliasMap();
+        List<Claim> norm = new ArrayList<>();
+        for (Claim c : raw) {
+            String from = map.getOrDefault(c.fromApp, c.fromApp);
+            String to = map.getOrDefault(c.toApp, c.toApp);
+            norm.add(new Claim(c.source, from, to, c.exists, c.confidence));
+        }
+        return norm;
+    }
 }

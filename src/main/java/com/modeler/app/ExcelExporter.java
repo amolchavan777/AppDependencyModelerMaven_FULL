@@ -7,9 +7,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Export various stages of the dependency modeling process to
@@ -18,28 +21,19 @@ import java.util.Set;
 public class ExcelExporter {
 
     /**
-     * Write raw claims, claim probabilities, source trust and final
-     * dependencies to an Excel workbook.
-     *
-     * @param rawClaims      list of claims from all adapters
-     * @param initialAgg     aggregated confidence per dependency
-     * @param claimProbs     probability of each claim being true
-     * @param sourceTrust    final trustworthiness per source
-     * @param dataCoverage   count of distinct sources per application
-     * @param finalDeps      resolved dependency graph
-     * @param filePath       destination XLSX file
-     * @throws IOException if writing fails
+     * Export the full modeling pipeline as an eight-sheet workbook.
      */
     public static void export(List<Claim> rawClaims,
+                              Map<String,String> normalizationMap,
+                              List<Claim> normalizedClaims,
                               Map<InitialAggregator.Pair, Double> initialAgg,
-                              Map<Claim, Double> claimProbs,
-                              Map<String, Double> sourceTrust,
-                              Map<String, Integer> dataCoverage,
+                              List<Map<String, Double>> ltmIterations,
                               Map<String, Set<String>> finalDeps,
+                              Map<String, Integer> dataCoverage,
                               String filePath) throws IOException {
         Workbook wb = new XSSFWorkbook();
 
-        // Raw claims sheet
+        // Raw claims sheet (1)
         Sheet rawSheet = wb.createSheet("Raw Claims");
         Row rHead = rawSheet.createRow(0);
         rHead.createCell(0).setCellValue("source");
@@ -57,8 +51,53 @@ public class ExcelExporter {
             r.createCell(4).setCellValue(c.confidence);
         }
 
+        // Normalization mapping sheet (2)
+        Sheet mapSheet = wb.createSheet("Normalization Mapping");
+        Row mHead = mapSheet.createRow(0);
+        mHead.createCell(0).setCellValue("alias");
+        mHead.createCell(1).setCellValue("canonical");
+        row = 1;
+        for (var e : normalizationMap.entrySet()) {
+            Row mr = mapSheet.createRow(row++);
+            mr.createCell(0).setCellValue(e.getKey());
+            mr.createCell(1).setCellValue(e.getValue());
+        }
 
-        // Initial aggregation sheet
+        // Alias/group resolution sheet (3)
+        Map<String, List<String>> groups = new LinkedHashMap<>();
+        for (var e : normalizationMap.entrySet()) {
+            groups.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
+        }
+        Sheet aliasSheet = wb.createSheet("Alias Groups");
+        Row aHead = aliasSheet.createRow(0);
+        aHead.createCell(0).setCellValue("canonical");
+        aHead.createCell(1).setCellValue("aliases");
+        row = 1;
+        for (var e : groups.entrySet()) {
+            Row ar = aliasSheet.createRow(row++);
+            ar.createCell(0).setCellValue(e.getKey());
+            ar.createCell(1).setCellValue(String.join(", ", e.getValue()));
+        }
+
+        // Normalized claims sheet (4)
+        Sheet normSheet = wb.createSheet("Normalized Claims");
+        Row nHead = normSheet.createRow(0);
+        nHead.createCell(0).setCellValue("source");
+        nHead.createCell(1).setCellValue("fromApp");
+        nHead.createCell(2).setCellValue("toApp");
+        nHead.createCell(3).setCellValue("exists");
+        nHead.createCell(4).setCellValue("confidence");
+        row = 1;
+        for (Claim c : normalizedClaims) {
+            Row nr = normSheet.createRow(row++);
+            nr.createCell(0).setCellValue(c.source);
+            nr.createCell(1).setCellValue(c.fromApp);
+            nr.createCell(2).setCellValue(c.toApp);
+            nr.createCell(3).setCellValue(c.exists);
+            nr.createCell(4).setCellValue(c.confidence);
+        }
+
+        // Initial aggregation sheet (5)
         Sheet aggSheet = wb.createSheet("Initial Aggregation");
         Row agHead = aggSheet.createRow(0);
         agHead.createCell(0).setCellValue("fromApp");
@@ -72,49 +111,28 @@ public class ExcelExporter {
             ar.createCell(2).setCellValue(e.getValue());
         }
 
-        // Claim probability sheet
-        Sheet probSheet = wb.createSheet("Claim Probabilities");
-        Row pHead = probSheet.createRow(0);
-        pHead.createCell(0).setCellValue("fromApp");
-        pHead.createCell(1).setCellValue("toApp");
-        pHead.createCell(2).setCellValue("source");
-        pHead.createCell(3).setCellValue("truthProb");
-        row = 1;
-        for (Map.Entry<Claim, Double> e : claimProbs.entrySet()) {
-            Claim c = e.getKey();
-            Row pr = probSheet.createRow(row++);
-            pr.createCell(0).setCellValue(c.fromApp);
-            pr.createCell(1).setCellValue(c.toApp);
-            pr.createCell(2).setCellValue(c.source);
-            pr.createCell(3).setCellValue(e.getValue());
+        // LTM iterations sheet (6)
+        Sheet iterSheet = wb.createSheet("LTM Iterations");
+        // Determine all sources across iterations
+        java.util.Set<String> sourceSet = new java.util.TreeSet<>();
+        for (Map<String, Double> m : ltmIterations) sourceSet.addAll(m.keySet());
+        java.util.List<String> sources = new java.util.ArrayList<>(sourceSet);
+        Row iHead = iterSheet.createRow(0);
+        iHead.createCell(0).setCellValue("iteration");
+        int col = 1;
+        for (String s : sources) iHead.createCell(col++).setCellValue(s);
+        int irow = 1;
+        int it = 0;
+        for (Map<String, Double> m : ltmIterations) {
+            Row ir = iterSheet.createRow(irow++);
+            ir.createCell(0).setCellValue(it++);
+            col = 1;
+            for (String s : sources) {
+                ir.createCell(col++).setCellValue(m.getOrDefault(s, 0.0));
+            }
         }
 
-
-        // Source trust sheet
-        Sheet trustSheet = wb.createSheet("Source Trust");
-        Row tHead = trustSheet.createRow(0);
-        tHead.createCell(0).setCellValue("source");
-        tHead.createCell(1).setCellValue("trust");
-        row = 1;
-        for (Map.Entry<String, Double> e : sourceTrust.entrySet()) {
-            Row tr = trustSheet.createRow(row++);
-            tr.createCell(0).setCellValue(e.getKey());
-            tr.createCell(1).setCellValue(e.getValue());
-        }
-
-        // Data coverage sheet
-        Sheet covSheet = wb.createSheet("Data Coverage");
-        Row covHead = covSheet.createRow(0);
-        covHead.createCell(0).setCellValue("application");
-        covHead.createCell(1).setCellValue("sources");
-        row = 1;
-        for (var e : dataCoverage.entrySet()) {
-            Row cr = covSheet.createRow(row++);
-            cr.createCell(0).setCellValue(e.getKey());
-            cr.createCell(1).setCellValue(e.getValue());
-        }
-
-        // Final dependency graph sheet
+        // Final dependency graph sheet (7)
         Sheet depSheet = wb.createSheet("Final Dependencies");
         Row dHead = depSheet.createRow(0);
         dHead.createCell(0).setCellValue("fromApp");
@@ -127,6 +145,18 @@ public class ExcelExporter {
                 dr.createCell(0).setCellValue(from);
                 dr.createCell(1).setCellValue(to);
             }
+        }
+
+        // Data coverage sheet (8)
+        Sheet covSheet = wb.createSheet("Data Coverage");
+        Row covHead = covSheet.createRow(0);
+        covHead.createCell(0).setCellValue("application");
+        covHead.createCell(1).setCellValue("sources");
+        row = 1;
+        for (var e : dataCoverage.entrySet()) {
+            Row cr = covSheet.createRow(row++);
+            cr.createCell(0).setCellValue(e.getKey());
+            cr.createCell(1).setCellValue(e.getValue());
         }
 
         try (FileOutputStream fos = new FileOutputStream(filePath)) {

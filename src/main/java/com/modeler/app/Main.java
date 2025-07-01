@@ -31,8 +31,10 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         try{
-            // Gather normalized claims from all adapters
-        List<Claim> allClaims = Normalizer.collectAllClaims();
+            // Gather raw claims from all adapters
+        List<Claim> rawClaims = Normalizer.collectAllClaims();
+        Map<String,String> aliasMap = Normalizer.getAliasMap();
+        List<Claim> allClaims = Normalizer.normalizeClaims(rawClaims);
         System.out.println("✅ Normalized Application Dependency Claims:");
         for (Claim c : allClaims) System.out.println(c);
         System.out.println("Collected " + allClaims.size() + " claims.");
@@ -81,12 +83,13 @@ public class Main {
             System.out.println("📄 CSV summaries exported to output/dependency_*.csv");
 
             // Export a multi-sheet Excel workbook for auditing
-            ExcelExporter.export(allClaims,
+            ExcelExporter.export(rawClaims,
+                    aliasMap,
+                    allClaims,
                     initialAgg,
-                    engine.getClaimProbabilities(),
-                    engine.getSourceTrust(),
-                    coverage,
+                    engine.getTrustHistory(),
                     result,
+                    coverage,
                     "output/application_dependency_audit.xlsx");
             System.out.println("📄 Excel audit workbook exported to output/application_dependency_audit.xlsx");
 

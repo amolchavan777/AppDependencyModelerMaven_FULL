@@ -9,9 +9,12 @@ public class TruthDiscoveryEngineEM {
 
     private Map<Claim, Double> claimProbabilities = new HashMap<>();
     private Map<String, Double> sourceTrust = new HashMap<>();
+    private final List<Map<String, Double>> trustHistory = new ArrayList<>();
 
     public void runEM(List<Claim> claims) {
         initialize(claims);
+        trustHistory.clear();
+        trustHistory.add(new HashMap<>(sourceTrust));
 
         for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
             Map<Claim, Double> newClaimProbs = estimateTruths(claims);
@@ -19,6 +22,7 @@ public class TruthDiscoveryEngineEM {
 
             claimProbabilities = newClaimProbs;
             sourceTrust = newSourceTrust;
+            trustHistory.add(new HashMap<>(sourceTrust));
 
             if (hasConverged(newClaimProbs, newSourceTrust)) {
                 break;
@@ -140,5 +144,12 @@ public class TruthDiscoveryEngineEM {
      */
     public Map<String, Double> getSourceTrust() {
         return sourceTrust;
+    }
+
+    /**
+     * Access the trustworthiness history over EM iterations.
+     */
+    public List<Map<String, Double>> getTrustHistory() {
+        return trustHistory;
     }
 }
