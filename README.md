@@ -19,6 +19,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - CSV summaries of dependencies and edges
 - Multi-sheet Excel audit workbook export (Process Flow + 8 pipeline tabs)
 - Multi-sheet Excel audit workbook export (9-stage pipeline with a "Process Flow" sheet)
+- Conflict detection of contradictory claims
 - Interactive web dashboard
 - Console histograms summarize dependency fan-in and fan-out
 - Dependency metrics and analytics
