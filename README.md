@@ -17,17 +17,28 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - ArchiMate XML and GraphML exports for visualization
 - JSON graph export for web visualizers
 - CSV summaries of dependencies and edges
-- Multi-sheet Excel audit workbook export (Process Flow + 8 pipeline tabs)
-- Multi-sheet Excel audit workbook export (9-stage pipeline with a "Process Flow" sheet)
+- Multi-sheet Excel audit workbook export (12-tab pipeline including a "Process Flow" overview)
 - Conflict detection of contradictory claims
 - Interactive web dashboard
 - Console histograms summarize dependency fan-in and fan-out
 - Dependency metrics and analytics
 - Multiplicity classifier distinguishes 1:1 vs 1:N relationship types
 - Claim identity resolution with canonical IDs
+- High-confidence filtering via FilteredModelExporter
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
+
+## 🔄 Revamped Modeling Flow
+1. Raw data collected by adapters is parsed into claims with confidence.
+2. Alias map normalizes service names.
+3. ClaimIdentityResolver assigns canonical IDs.
+4. NegativeClaimGenerator adds absence claims for 1:1 relationships.
+5. ConflictDetector groups contradictory claims.
+6. InitialAggregator computes preliminary scores.
+7. TruthDiscoveryEngineEM runs per conflict group to infer probabilities.
+8. FilteredModelExporter can emit high-confidence subsets.
+9. Results are exported to multiple formats.
 
 ## 📊 Excel Workbook Tabs
 
@@ -42,16 +53,35 @@ The generated `application_dependency_audit.xlsx` contains several tabs that tra
 | 5 | Normalized Claims | Claims after aliases have been resolved |
 | 6 | Claim Identities | Canonical IDs assigned to each dependency |
 | 7 | Negative Claims | Generated absence assertions |
-| 8 | Initial Aggregation | Preliminary scores before EM |
-| 9 | LTM Iterations | Trust scores for each source across EM steps |
-|10 | Final Dependencies | Resolved dependency graph |
-|11 | Data Coverage | Number of evidence sources per application |
+| 8 | Conflict Groups | Positive vs negative evidence per pair |
+| 9 | Initial Aggregation | Preliminary scores before EM |
+|10 | LTM Iterations | Trust scores for each source across EM steps |
+|11 | Final Dependencies | Resolved dependency graph |
+|12 | Data Coverage | Number of evidence sources per application |
 
 ## 📜 Changelog (last 48 hours)
 
 The following log summarizes recent commits and the thinking behind them. Times
 are taken from the Git history and use the `+03:00` timezone recorded there.
 
+- **2025-07-01 23:48** – *Setup script*
+  - Added `setup_env.sh` to prefetch Maven dependencies offline.
+- **2025-07-02 00:09** – *Pom updates*
+  - Updated `pom.xml` for new modules.
+- **2025-07-02 00:22** – *Improved exception handling*
+  - Streamlined error reporting in `Main`.
+- **2025-07-02 01:25** – *Claim identity resolver*
+  - Added `ClaimIdentityResolver` with canonical claim IDs.
+- **2025-07-02 01:27** – *String claim merger*
+  - Utility to flatten claims for comparisons.
+- **2025-07-02 01:30** – *Multiplicity + negative claims*
+  - Classifier distinguishes 1:1 vs 1:N; negative claim generation tested.
+- **2025-07-02 01:34** – *Conflict detection*
+  - Groups contradictory claims for analysis.
+- **2025-07-02 01:43** – *Conflict-scoped EM*
+  - TruthDiscoveryEngineEM now runs per conflict group.
+- **2025-07-02 01:47** – *Filtered exports*
+  - Added `FilteredModelExporter` for high-confidence outputs.
 - **2025-07-01 01:43** – *Excel audit export*
   - Introduced `ExcelExporter.java` and supporting Maven dependencies to generate
     `application_dependency_audit.xlsx` from EM results.

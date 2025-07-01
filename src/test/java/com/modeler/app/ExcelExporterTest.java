@@ -9,6 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+// Additional model classes for new export parameters
+import com.modeler.app.ClaimIdentityResolver;
+import com.modeler.app.ConflictDetector;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExcelExporterTest {
@@ -17,14 +21,16 @@ public class ExcelExporterTest {
         List<Claim> raw = List.of(new Claim("test", "A", "B", true, 1.0, "t1", "m1"));
         Map<String,String> normMap = Collections.emptyMap();
         List<Claim> norm = Collections.emptyList();
+        List<ClaimIdentityResolver.ResolvedClaim> ids = Collections.emptyList();
         List<Claim> neg = Collections.emptyList();
+        List<ConflictDetector.ConflictGroup> conflicts = Collections.emptyList();
         Map<InitialAggregator.Pair, Double> agg = Collections.emptyMap();
         List<Map<String, Double>> iters = Collections.emptyList();
         Map<String, Set<String>> deps = Collections.emptyMap();
         Map<String, Integer> cov = Collections.emptyMap();
 
         Path file = Files.createTempFile("export", ".xlsx");
-        ExcelExporter.export(raw, normMap, norm, neg, agg, iters, deps, cov, file.toString());
+        ExcelExporter.export(raw, normMap, norm, ids, neg, conflicts, agg, iters, deps, cov, file.toString());
 
         try (XSSFWorkbook wb = new XSSFWorkbook(file.toFile())) {
             Sheet sheet = wb.getSheet("Raw Claims");

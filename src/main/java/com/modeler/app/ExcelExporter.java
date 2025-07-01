@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+// additional model helpers
+import com.modeler.app.ClaimIdentityResolver;
+import com.modeler.app.ConflictDetector;
+
 /**
  * Export various stages of the dependency modeling process to
  * a single multi-sheet Excel workbook for auditing purposes.
@@ -26,7 +30,9 @@ public class ExcelExporter {
     public static void export(List<Claim> rawClaims,
                               Map<String,String> normalizationMap,
                               List<Claim> normalizedClaims,
+                              List<ClaimIdentityResolver.ResolvedClaim> resolvedClaims,
                               List<Claim> negativeClaims,
+                              List<ConflictDetector.ConflictGroup> conflictGroups,
                               Map<InitialAggregator.Pair, Double> initialAgg,
                               List<Map<String, Double>> ltmIterations,
                               Map<String, Set<String>> finalDeps,
@@ -44,7 +50,9 @@ public class ExcelExporter {
                 "Normalization Mapping",
                 "Alias Groups",
                 "Normalized Claims",
+                "Claim Identities",
                 "Negative Claims",
+                "Conflict Groups",
                 "Initial Aggregation",
                 "LTM Iterations",
                 "Final Dependencies",
@@ -123,7 +131,27 @@ public class ExcelExporter {
             nr.createCell(4).setCellValue(c.confidence);
         }
 
-        // Negative claims sheet (6)
+        // Claim identity sheet (6)
+        Sheet idSheet = wb.createSheet("Claim Identities");
+        Row idHead = idSheet.createRow(0);
+        idHead.createCell(0).setCellValue("id");
+        idHead.createCell(1).setCellValue("fromApp");
+        idHead.createCell(2).setCellValue("toApp");
+        idHead.createCell(3).setCellValue("source");
+        idHead.createCell(4).setCellValue("exists");
+        idHead.createCell(5).setCellValue("confidence");
+        row = 1;
+        for (ClaimIdentityResolver.ResolvedClaim rc : resolvedClaims) {
+            Row ir = idSheet.createRow(row++);
+            ir.createCell(0).setCellValue(rc.id());
+            ir.createCell(1).setCellValue(rc.from());
+            ir.createCell(2).setCellValue(rc.to());
+            ir.createCell(3).setCellValue(rc.claim.source);
+            ir.createCell(4).setCellValue(rc.claim.exists);
+            ir.createCell(5).setCellValue(rc.claim.confidence);
+        }
+
+        // Negative claims sheet (7)
         Sheet negSheet = wb.createSheet("Negative Claims");
         Row negHead = negSheet.createRow(0);
         negHead.createCell(0).setCellValue("source");
@@ -137,7 +165,28 @@ public class ExcelExporter {
             nr.createCell(2).setCellValue(c.toApp);
         }
 
-        // Initial aggregation sheet (7)
+        // Conflict groups sheet (8)
+        Sheet confSheet = wb.createSheet("Conflict Groups");
+        Row confHead = confSheet.createRow(0);
+        confHead.createCell(0).setCellValue("fromApp");
+        confHead.createCell(1).setCellValue("toApp");
+        confHead.createCell(2).setCellValue("conflicted");
+        confHead.createCell(3).setCellValue("sources");
+        row = 1;
+        for (ConflictDetector.ConflictGroup g : conflictGroups) {
+            Row cr = confSheet.createRow(row++);
+            cr.createCell(0).setCellValue(g.pair.from);
+            cr.createCell(1).setCellValue(g.pair.to);
+            cr.createCell(2).setCellValue(g.conflicted);
+            List<String> srcs = new ArrayList<>();
+            for (Claim c : g.claims) {
+                String label = c.source + (c.exists ? "" : "(neg)");
+                srcs.add(label);
+            }
+            cr.createCell(3).setCellValue(String.join(", ", srcs));
+        }
+
+        // Initial aggregation sheet (9)
         Sheet aggSheet = wb.createSheet("Initial Aggregation");
         Row agHead = aggSheet.createRow(0);
         agHead.createCell(0).setCellValue("fromApp");
@@ -151,7 +200,7 @@ public class ExcelExporter {
             ar.createCell(2).setCellValue(e.getValue());
         }
 
-        // LTM iterations sheet (8)
+        // LTM iterations sheet (10)
         Sheet iterSheet = wb.createSheet("LTM Iterations");
         // Determine all sources across iterations
         java.util.Set<String> sourceSet = new java.util.TreeSet<>();
@@ -172,7 +221,7 @@ public class ExcelExporter {
             }
         }
 
-        // Final dependency graph sheet (9)
+        // Final dependency graph sheet (11)
         Sheet depSheet = wb.createSheet("Final Dependencies");
         Row dHead = depSheet.createRow(0);
         dHead.createCell(0).setCellValue("fromApp");
@@ -187,7 +236,7 @@ public class ExcelExporter {
             }
         }
 
-        // Data coverage sheet (10)
+        // Data coverage sheet (12)
         Sheet covSheet = wb.createSheet("Data Coverage");
         Row covHead = covSheet.createRow(0);
         covHead.createCell(0).setCellValue("application");
