@@ -26,6 +26,7 @@ public class ExcelExporter {
     public static void export(List<Claim> rawClaims,
                               Map<String,String> normalizationMap,
                               List<Claim> normalizedClaims,
+                              List<Claim> negativeClaims,
                               Map<InitialAggregator.Pair, Double> initialAgg,
                               List<Map<String, Double>> ltmIterations,
                               Map<String, Set<String>> finalDeps,
@@ -43,6 +44,7 @@ public class ExcelExporter {
                 "Normalization Mapping",
                 "Alias Groups",
                 "Normalized Claims",
+                "Negative Claims",
                 "Initial Aggregation",
                 "LTM Iterations",
                 "Final Dependencies",
@@ -121,7 +123,21 @@ public class ExcelExporter {
             nr.createCell(4).setCellValue(c.confidence);
         }
 
-        // Initial aggregation sheet (6)
+        // Negative claims sheet (6)
+        Sheet negSheet = wb.createSheet("Negative Claims");
+        Row negHead = negSheet.createRow(0);
+        negHead.createCell(0).setCellValue("source");
+        negHead.createCell(1).setCellValue("fromApp");
+        negHead.createCell(2).setCellValue("toApp");
+        row = 1;
+        for (Claim c : negativeClaims) {
+            Row nr = negSheet.createRow(row++);
+            nr.createCell(0).setCellValue(c.source);
+            nr.createCell(1).setCellValue(c.fromApp);
+            nr.createCell(2).setCellValue(c.toApp);
+        }
+
+        // Initial aggregation sheet (7)
         Sheet aggSheet = wb.createSheet("Initial Aggregation");
         Row agHead = aggSheet.createRow(0);
         agHead.createCell(0).setCellValue("fromApp");
@@ -135,7 +151,7 @@ public class ExcelExporter {
             ar.createCell(2).setCellValue(e.getValue());
         }
 
-        // LTM iterations sheet (7)
+        // LTM iterations sheet (8)
         Sheet iterSheet = wb.createSheet("LTM Iterations");
         // Determine all sources across iterations
         java.util.Set<String> sourceSet = new java.util.TreeSet<>();
@@ -156,7 +172,7 @@ public class ExcelExporter {
             }
         }
 
-        // Final dependency graph sheet (8)
+        // Final dependency graph sheet (9)
         Sheet depSheet = wb.createSheet("Final Dependencies");
         Row dHead = depSheet.createRow(0);
         dHead.createCell(0).setCellValue("fromApp");
@@ -171,7 +187,7 @@ public class ExcelExporter {
             }
         }
 
-        // Data coverage sheet (9)
+        // Data coverage sheet (10)
         Sheet covSheet = wb.createSheet("Data Coverage");
         Row covHead = covSheet.createRow(0);
         covHead.createCell(0).setCellValue("application");

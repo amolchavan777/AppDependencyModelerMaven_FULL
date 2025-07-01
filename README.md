@@ -37,10 +37,11 @@ The generated `application_dependency_audit.xlsx` contains several tabs that tra
 | 3 | Normalization Mapping | Alias to canonical name mappings |
 | 4 | Alias Groups | Canonical names grouped with their aliases |
 | 5 | Normalized Claims | Claims after aliases have been resolved |
-| 6 | Initial Aggregation | Preliminary scores before EM |
-| 7 | LTM Iterations | Trust scores for each source across EM steps |
-| 8 | Final Dependencies | Resolved dependency graph |
-| 9 | Data Coverage | Number of evidence sources per application |
+| 6 | Negative Claims | Generated absence assertions |
+| 7 | Initial Aggregation | Preliminary scores before EM |
+| 8 | LTM Iterations | Trust scores for each source across EM steps |
+| 9 | Final Dependencies | Resolved dependency graph |
+|10 | Data Coverage | Number of evidence sources per application |
 
 ## 📜 Changelog (last 48 hours)
 
@@ -53,7 +54,7 @@ are taken from the Git history and use the `+03:00` timezone recorded there.
   - Allows auditors to review dependency evidence in a structured workbook.
 - **2025-07-01 18:50** – *Process flow sheet*
   - Excel workbook now includes a "Process Flow" sheet summarizing pipeline steps.
-  - Nine sheets are produced in total.
+  - Ten sheets are produced in total.
 - **2025-07-01 13:03** – *Excel workbook pipeline*
   - Excel export now produces eight sheets showing each processing stage.
 

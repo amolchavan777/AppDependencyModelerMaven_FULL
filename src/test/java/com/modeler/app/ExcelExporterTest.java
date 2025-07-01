@@ -17,13 +17,14 @@ public class ExcelExporterTest {
         List<Claim> raw = List.of(new Claim("test", "A", "B", true, 1.0, "t1", "m1"));
         Map<String,String> normMap = Collections.emptyMap();
         List<Claim> norm = Collections.emptyList();
+        List<Claim> neg = Collections.emptyList();
         Map<InitialAggregator.Pair, Double> agg = Collections.emptyMap();
         List<Map<String, Double>> iters = Collections.emptyList();
         Map<String, Set<String>> deps = Collections.emptyMap();
         Map<String, Integer> cov = Collections.emptyMap();
 
         Path file = Files.createTempFile("export", ".xlsx");
-        ExcelExporter.export(raw, normMap, norm, agg, iters, deps, cov, file.toString());
+        ExcelExporter.export(raw, normMap, norm, neg, agg, iters, deps, cov, file.toString());
 
         try (XSSFWorkbook wb = new XSSFWorkbook(file.toFile())) {
             Sheet sheet = wb.getSheet("Raw Claims");

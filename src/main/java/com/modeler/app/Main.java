@@ -9,6 +9,7 @@ import com.modeler.app.DashboardExporter;
 import com.modeler.app.ExcelExporter;
 import com.modeler.app.InitialAggregator;
 import com.modeler.app.CoverageUtil;
+import com.modeler.app.NegativeClaimGenerator;
 
 
 // Histogram utilities
@@ -35,6 +36,7 @@ public class Main {
         List<Claim> rawClaims = Normalizer.collectAllClaims();
         Map<String,String> aliasMap = Normalizer.getAliasMap();
         List<Claim> allClaims = Normalizer.normalizeClaims(rawClaims);
+        List<Claim> negativeClaims = NegativeClaimGenerator.generate(allClaims);
         System.out.println("✅ Normalized Application Dependency Claims:");
         for (Claim c : allClaims) System.out.println(c);
         System.out.println("Collected " + allClaims.size() + " claims.");
@@ -86,6 +88,7 @@ public class Main {
             ExcelExporter.export(rawClaims,
                     aliasMap,
                     allClaims,
+                    negativeClaims,
                     initialAgg,
                     engine.getTrustHistory(),
                     result,
