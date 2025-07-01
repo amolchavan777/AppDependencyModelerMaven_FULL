@@ -61,7 +61,7 @@ public class Main {
 
         // Resolve conflicting claims using the latent credibility engine
             TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
-            engine.runEM(allClaims);
+            engine.runEM(combined);
 
        Map<String, Set<String>> result = engine.getResult();
         // If you want to use a run method with a specific number of iterations, you can add:
