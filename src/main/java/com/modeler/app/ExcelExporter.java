@@ -21,7 +21,7 @@ import java.util.TreeSet;
 public class ExcelExporter {
 
     /**
-     * Export the full modeling pipeline as an eight-sheet workbook.
+     * Export the full modeling pipeline as a nine-sheet workbook.
      */
     public static void export(List<Claim> rawClaims,
                               Map<String,String> normalizationMap,
@@ -33,7 +33,27 @@ public class ExcelExporter {
                               String filePath) throws IOException {
         Workbook wb = new XSSFWorkbook();
 
-        // Raw claims sheet (1)
+        // Process flow sheet (1)
+        Sheet flowSheet = wb.createSheet("Process Flow");
+        Row fHead = flowSheet.createRow(0);
+        fHead.createCell(0).setCellValue("step");
+        int fRow = 1;
+        String[] steps = new String[] {
+                "Raw Claims",
+                "Normalization Mapping",
+                "Alias Groups",
+                "Normalized Claims",
+                "Initial Aggregation",
+                "LTM Iterations",
+                "Final Dependencies",
+                "Data Coverage"
+        };
+        for (String s : steps) {
+            Row fr = flowSheet.createRow(fRow++);
+            fr.createCell(0).setCellValue(s);
+        }
+
+        // Raw claims sheet (2)
         Sheet rawSheet = wb.createSheet("Raw Claims");
         Row rHead = rawSheet.createRow(0);
         rHead.createCell(0).setCellValue("source");
@@ -51,7 +71,7 @@ public class ExcelExporter {
             r.createCell(4).setCellValue(c.confidence);
         }
 
-        // Normalization mapping sheet (2)
+        // Normalization mapping sheet (3)
         Sheet mapSheet = wb.createSheet("Normalization Mapping");
         Row mHead = mapSheet.createRow(0);
         mHead.createCell(0).setCellValue("alias");
@@ -63,7 +83,7 @@ public class ExcelExporter {
             mr.createCell(1).setCellValue(e.getValue());
         }
 
-        // Alias/group resolution sheet (3)
+        // Alias/group resolution sheet (4)
         Map<String, List<String>> groups = new LinkedHashMap<>();
         for (var e : normalizationMap.entrySet()) {
             groups.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
@@ -79,7 +99,7 @@ public class ExcelExporter {
             ar.createCell(1).setCellValue(String.join(", ", e.getValue()));
         }
 
-        // Normalized claims sheet (4)
+        // Normalized claims sheet (5)
         Sheet normSheet = wb.createSheet("Normalized Claims");
         Row nHead = normSheet.createRow(0);
         nHead.createCell(0).setCellValue("source");
@@ -97,7 +117,7 @@ public class ExcelExporter {
             nr.createCell(4).setCellValue(c.confidence);
         }
 
-        // Initial aggregation sheet (5)
+        // Initial aggregation sheet (6)
         Sheet aggSheet = wb.createSheet("Initial Aggregation");
         Row agHead = aggSheet.createRow(0);
         agHead.createCell(0).setCellValue("fromApp");
@@ -111,7 +131,7 @@ public class ExcelExporter {
             ar.createCell(2).setCellValue(e.getValue());
         }
 
-        // LTM iterations sheet (6)
+        // LTM iterations sheet (7)
         Sheet iterSheet = wb.createSheet("LTM Iterations");
         // Determine all sources across iterations
         java.util.Set<String> sourceSet = new java.util.TreeSet<>();
@@ -132,7 +152,7 @@ public class ExcelExporter {
             }
         }
 
-        // Final dependency graph sheet (7)
+        // Final dependency graph sheet (8)
         Sheet depSheet = wb.createSheet("Final Dependencies");
         Row dHead = depSheet.createRow(0);
         dHead.createCell(0).setCellValue("fromApp");
@@ -147,7 +167,7 @@ public class ExcelExporter {
             }
         }
 
-        // Data coverage sheet (8)
+        // Data coverage sheet (9)
         Sheet covSheet = wb.createSheet("Data Coverage");
         Row covHead = covSheet.createRow(0);
         covHead.createCell(0).setCellValue("application");
