@@ -36,6 +36,8 @@ public class Main {
         List<Claim> rawClaims = Normalizer.collectAllClaims();
         Map<String,String> aliasMap = Normalizer.getAliasMap();
         List<Claim> allClaims = Normalizer.normalizeClaims(rawClaims);
+        ClaimIdentityResolver resolver = new ClaimIdentityResolver(aliasMap);
+        List<ClaimIdentityResolver.ResolvedClaim> resolved = resolver.resolve(rawClaims);
         List<Claim> negativeClaims = NegativeClaimGenerator.generate(allClaims);
         System.out.println("✅ Normalized Application Dependency Claims:");
         for (Claim c : allClaims) System.out.println(c);
@@ -102,7 +104,9 @@ public class Main {
             ExcelExporter.export(rawClaims,
                     aliasMap,
                     allClaims,
+                    resolved,
                     negativeClaims,
+                    conflictGroups,
                     initialAgg,
                     engine.getTrustHistory(),
                     result,
