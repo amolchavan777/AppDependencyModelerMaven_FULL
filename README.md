@@ -22,6 +22,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - Interactive web dashboard
 - Console histograms summarize dependency fan-in and fan-out
 - Dependency metrics and analytics
+- Multiplicity classifier distinguishes 1:1 vs 1:N relationship types
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
@@ -101,6 +102,14 @@ are taken from the Git history and use the `+03:00` timezone recorded there.
 | OpenTelemetry traces | `otel_traces.json`            | `OpenTelemetryAdapter`      |
 | GitLab CI/CD logs    | `gitlab_pipeline.log`         | `GitlabCiAdapter`           |
 | API Specifications   | `api_spec.yaml`               | `ApiSpecAdapter`            |
+
+---
+
+## ⚙️ Configuration
+
+- **Alias map** – Normalizes service names (see `Normalizer.getAliasMap`) to merge synonyms like `web-tier` → `WebPortal`.
+- **Multiplicity rules** – `MultiplicityClassifier` tags relationship types as `ONE_TO_ONE` or `ONE_TO_MANY` (e.g. `default_db` is 1:1).
+- **EM confidence threshold** – dependencies require probability > 0.5 to be exported.
 
 ---
 

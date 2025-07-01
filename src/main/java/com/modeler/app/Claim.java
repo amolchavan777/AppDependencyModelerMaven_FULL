@@ -12,6 +12,8 @@ public class Claim {
     public String fromApp;
     /** name of the called application */
     public String toApp;
+    /** relationship type (e.g. calls, default_db) */
+    public String type;
     /** whether the dependency exists in the source (true) or is an absence claim */
     public boolean exists;
     /** confidence level assigned by the source */
@@ -22,20 +24,38 @@ public class Claim {
     public String metadata;
 
     /**
-     * Construct a new {@code Claim} instance.
+     * Construct a new {@code Claim} instance using the default relationship type
+     * of {@code "calls"}.
      */
     public Claim(String source, String fromApp, String toApp, boolean exists, double confidence) {
-        this(source, fromApp, toApp, exists, confidence, null, null);
+        this(source, fromApp, toApp, "calls", exists, confidence, null, null);
     }
 
     /**
-     * Construct a new {@code Claim} with optional timestamp and metadata.
+     * Construct a new {@code Claim} with optional timestamp and metadata using
+     * the default relationship type of {@code "calls"}.
      */
     public Claim(String source, String fromApp, String toApp, boolean exists, double confidence,
                  String timestamp, String metadata) {
+        this(source, fromApp, toApp, "calls", exists, confidence, timestamp, metadata);
+    }
+
+    /**
+     * Construct a new {@code Claim} with an explicit relationship type.
+     */
+    public Claim(String source, String fromApp, String toApp, String type, boolean exists, double confidence) {
+        this(source, fromApp, toApp, type, exists, confidence, null, null);
+    }
+
+    /**
+     * Fully specified constructor.
+     */
+    public Claim(String source, String fromApp, String toApp, String type,
+                 boolean exists, double confidence, String timestamp, String metadata) {
         this.source = source;
         this.fromApp = fromApp;
         this.toApp = toApp;
+        this.type = type;
         this.exists = exists;
         this.confidence = confidence;
         this.timestamp = timestamp;
