@@ -17,6 +17,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - ArchiMate XML and GraphML exports for visualization
 - JSON graph export for web visualizers
 - CSV summaries of dependencies and edges
+- Multi-sheet Excel audit workbook export (Process Flow + 8 pipeline tabs)
 - Multi-sheet Excel audit workbook export (9-stage pipeline with a "Process Flow" sheet)
 - Interactive web dashboard
 - Console histograms summarize dependency fan-in and fan-out
@@ -24,6 +25,23 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
+
+## 📊 Excel Workbook Tabs
+
+The generated `application_dependency_audit.xlsx` contains several tabs that trace how raw claims become finalized dependencies. New in this release is the **Process Flow** sheet summarizing the entire pipeline. Tabs appear in this order:
+
+| # | Sheet | Purpose |
+|---|-------|---------|
+| 1 | Process Flow | High-level diagram of the modeling stages |
+| 2 | Raw Claims | All collected dependency claims with confidence values |
+| 3 | Normalization Mapping | Alias to canonical name mappings |
+| 4 | Alias Groups | Canonical names grouped with their aliases |
+| 5 | Normalized Claims | Claims after aliases have been resolved |
+| 6 | Initial Aggregation | Preliminary scores before EM |
+| 7 | LTM Iterations | Trust scores for each source across EM steps |
+| 8 | Final Dependencies | Resolved dependency graph |
+| 9 | Data Coverage | Number of evidence sources per application |
+
 ## 📜 Changelog (last 48 hours)
 
 The following log summarizes recent commits and the thinking behind them. Times
