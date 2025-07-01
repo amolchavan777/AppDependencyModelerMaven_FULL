@@ -99,10 +99,8 @@ public class Main {
         
 
         } catch (Exception e) {
-
-            System.err.println("Error initializing Normalizer: " + e.getMessage());
             e.printStackTrace();
-
+            System.err.println("An error occurred: " + e.getMessage());
         }
 
     }
