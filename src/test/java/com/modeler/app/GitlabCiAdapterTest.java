@@ -11,6 +11,8 @@ public class GitlabCiAdapterTest {
     public void parsesPipelineLog() throws IOException {
         List<Claim> claims = GitlabCiAdapter.parse("raw_scanner_data/gitlab_pipeline.log");
         assertFalse(claims.isEmpty(), "Claims should not be empty");
+        Claim first = claims.get(0);
+        assertNotNull(first.metadata, "Metadata(stage) should be set");
         boolean found = claims.stream()
             .anyMatch(c -> c.fromApp.equals("WebPortal") && c.toApp.equals("web-tier"));
         assertTrue(found, "Expected WebPortal -> web-tier deployment");

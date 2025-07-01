@@ -27,10 +27,17 @@ public class ApplicationLogAdapter {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains("connected to")) {
-                    // Example: "INFO: AdminConsole connected to CustomerService"
-                    String fromApp = line.split("INFO: ")[1].split(" connected")[0].trim();
-                    String toApp = line.split("connected to")[1].split("on")[0].trim();
-                    claims.add(new Claim("AppLog", fromApp, toApp, true, 0.8));
+                    String timestamp = null;
+                    if (line.startsWith("[")) {
+                        timestamp = line.substring(1, line.indexOf(']')).trim();
+                    }
+                    String remainder = line.substring(line.indexOf(']') + 2);
+                    String severity = remainder.split(":")[0].trim();
+                    String rest = remainder.substring(remainder.indexOf(':') + 1).trim();
+                    String fromApp = rest.split(" connected")[0].trim();
+                    String toApp = rest.split("connected to")[1].split("on")[0].trim();
+                    Claim c = new Claim("AppLog", fromApp, toApp, true, 0.8, timestamp, severity);
+                    claims.add(c);
                 }
             }
         }

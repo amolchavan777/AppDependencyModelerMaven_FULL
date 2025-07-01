@@ -61,6 +61,8 @@ public class ExcelExporter {
         rHead.createCell(2).setCellValue("toApp");
         rHead.createCell(3).setCellValue("exists");
         rHead.createCell(4).setCellValue("confidence");
+        rHead.createCell(5).setCellValue("timestamp");
+        rHead.createCell(6).setCellValue("metadata");
         int row = 1;
         for (Claim c : rawClaims) {
             Row r = rawSheet.createRow(row++);
@@ -69,6 +71,8 @@ public class ExcelExporter {
             r.createCell(2).setCellValue(c.toApp);
             r.createCell(3).setCellValue(c.exists);
             r.createCell(4).setCellValue(c.confidence);
+            if (c.timestamp != null) r.createCell(5).setCellValue(c.timestamp);
+            if (c.metadata != null) r.createCell(6).setCellValue(c.metadata);
         }
 
         // Normalization mapping sheet (3)
