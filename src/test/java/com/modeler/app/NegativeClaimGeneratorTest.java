@@ -26,6 +26,9 @@ public class NegativeClaimGeneratorTest {
         assertTrue(hasS1AC, "Missing negative for s1 A->C");
         assertTrue(hasS2AB, "Missing negative for s2 A->B");
 
+    }
+
+    @Test
     public void respectsMultiplicityRules() {
         List<Claim> claims = List.of(
                 new Claim("s1", "A", "B", "default_db", true, 1.0),
