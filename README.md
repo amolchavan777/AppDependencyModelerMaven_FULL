@@ -326,3 +326,18 @@ Repeat E-step and M-step until the change in trust scores and truth probabilitie
 
 ---
 
+## ⚔️ Conflict-Scoped Execution
+
+The truth discovery engine groups claims by `(fromApp, toApp)` and runs EM on
+each group separately. Only the sources participating in a particular conflict
+affect that dependency's probability. After every group converges, source trust
+scores are averaged across groups. This isolation speeds up large datasets and
+prevents unrelated evidence from skewing results.
+
+Key configuration constants:
+
+- `MAX_ITERATIONS = 20`
+- `CONVERGENCE_THRESHOLD = 0.001`
+
+---
+
