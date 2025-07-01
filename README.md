@@ -23,6 +23,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - Console histograms summarize dependency fan-in and fan-out
 - Dependency metrics and analytics
 - Multiplicity classifier distinguishes 1:1 vs 1:N relationship types
+- Claim identity resolution with canonical IDs
 - Pluggable adapter system
 - Rich sample dataset included
 - Maven project structure
@@ -38,11 +39,12 @@ The generated `application_dependency_audit.xlsx` contains several tabs that tra
 | 3 | Normalization Mapping | Alias to canonical name mappings |
 | 4 | Alias Groups | Canonical names grouped with their aliases |
 | 5 | Normalized Claims | Claims after aliases have been resolved |
-| 6 | Negative Claims | Generated absence assertions |
-| 7 | Initial Aggregation | Preliminary scores before EM |
-| 8 | LTM Iterations | Trust scores for each source across EM steps |
-| 9 | Final Dependencies | Resolved dependency graph |
-|10 | Data Coverage | Number of evidence sources per application |
+| 6 | Claim Identities | Canonical IDs assigned to each dependency |
+| 7 | Negative Claims | Generated absence assertions |
+| 8 | Initial Aggregation | Preliminary scores before EM |
+| 9 | LTM Iterations | Trust scores for each source across EM steps |
+|10 | Final Dependencies | Resolved dependency graph |
+|11 | Data Coverage | Number of evidence sources per application |
 
 ## 📜 Changelog (last 48 hours)
 
