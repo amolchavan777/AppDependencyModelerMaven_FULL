@@ -25,9 +25,14 @@ public class WiresharkAdapter {
             while ((line = br.readLine()) != null) {
                 if (line.contains("IP")) {
                     String[] parts = line.split(" ");
+                    String timestamp = parts[0];
                     String fromApp = parts[2].split("\\.|:")[0];
                     String toApp = parts[4].split("\\.|:")[0];
-                    claims.add(new Claim("Wireshark", fromApp, toApp, true, 0.85));
+                    StringBuilder meta = new StringBuilder();
+                    for (int i = 5; i < parts.length; i++) meta.append(parts[i]).append(" ");
+                    String metadata = meta.toString().trim();
+                    Claim c = new Claim("Wireshark", fromApp, toApp, true, 0.85, timestamp, metadata);
+                    claims.add(c);
                 }
             }
         }

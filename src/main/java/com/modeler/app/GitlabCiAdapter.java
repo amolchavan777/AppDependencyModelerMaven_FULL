@@ -28,7 +28,9 @@ public class GitlabCiAdapter {
                     String[] parts = line.split("->");
                     String from = parts[0].split("]")[1].trim();
                     String to = parts[1].trim();
-                    claims.add(new Claim("GitlabCI", from, to, true, 0.75));
+                    String stage = line.substring(line.indexOf('[') + 1, line.indexOf(']')).trim();
+                    Claim c = new Claim("GitlabCI", from, to, true, 0.75, null, stage);
+                    claims.add(c);
                 }
             }
         }
