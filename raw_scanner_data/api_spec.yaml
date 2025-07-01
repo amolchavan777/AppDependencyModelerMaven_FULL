@@ -19,3 +19,25 @@ paths:
       x-calls:
         - SessionService
         - RedisStore
+  /transfer:
+    post:
+      summary: Transfer funds
+      x-calls:
+        - PaymentGateway
+        - FraudService
+  /loans:
+    get:
+      summary: Loan applications
+      x-calls:
+        - LoanService
+  /balance:
+    get:
+      summary: Check balance
+      x-calls:
+        - CoreBanking
+  /alerts:
+    post:
+      summary: Issue alert
+      x-calls:
+        - FraudService
+        - NotificationEngine

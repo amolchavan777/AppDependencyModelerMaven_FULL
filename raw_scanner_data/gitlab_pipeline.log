@@ -1,9 +1,10 @@
 [Stage: build] WebPortal: npm install
-[Stage: build] AuthGateway: mvn compile
-[Stage: test] CustomerService: mvn test
-[Stage: test] AnalyticsEngine: python3 -m unittest
+[Stage: build] PaymentGateway: mvn compile
+[Stage: test] FraudService: mvn test
+[Stage: test] CreditRiskEngine: python3 -m unittest
 [Stage: deploy] WebPortal -> web-tier
-[Stage: deploy] AuthGateway -> edge-api
-[Stage: deploy] NotificationEngine -> messaging-queue
-[Stage: deploy] AnalyticsEngine -> analytics-tier
+[Stage: deploy] PaymentGateway -> card-api
+[Stage: deploy] FraudService -> fraud-tier
+[Stage: deploy] CreditRiskEngine -> risk-tier
 [Stage: deploy] AdminConsole -> admin-tier
+[Stage: deploy] UnknownService -> unknown-tier
