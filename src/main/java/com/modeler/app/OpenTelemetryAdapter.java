@@ -27,7 +27,9 @@ public class OpenTelemetryAdapter {
             JSONObject span = spans.getJSONObject(i);
             String from = span.getString("service");
             String to = span.getString("targetService");
-            claims.add(new Claim("OpenTelemetry", from, to, true, 0.88));
+            String meta = span.optString("name", null);
+            Claim c = new Claim("OpenTelemetry", from, to, true, 0.88, null, meta);
+            claims.add(c);
         }
         return claims;
     }
