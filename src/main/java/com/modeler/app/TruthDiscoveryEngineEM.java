@@ -12,35 +12,38 @@ public class TruthDiscoveryEngineEM {
     private final List<Map<String, Double>> trustHistory = new ArrayList<>();
 
     public void runEM(List<Claim> claims) {
-        initialize(claims);
+        claimProbabilities.clear();
+        sourceTrust.clear();
         trustHistory.clear();
-        trustHistory.add(new HashMap<>(sourceTrust));
 
-        for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
-            Map<Claim, Double> newClaimProbs = estimateTruths(claims);
-            Map<String, Double> newSourceTrust = updateTrustworthiness(claims, newClaimProbs);
+        Map<String, List<Claim>> groups = new LinkedHashMap<>();
+        for (Claim c : claims) {
+            String key = c.fromApp + "|" + c.toApp;
+            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(c);
+        }
 
-            claimProbabilities = newClaimProbs;
-            sourceTrust = newSourceTrust;
-            trustHistory.add(new HashMap<>(sourceTrust));
+        Map<String, Double> trustSum = new HashMap<>();
+        Map<String, Integer> trustCount = new HashMap<>();
 
-            if (hasConverged(newClaimProbs, newSourceTrust)) {
-                break;
+        for (List<Claim> group : groups.values()) {
+            if (group.isEmpty()) continue;
+            GroupResult gr = runGroupEM(group);
+            claimProbabilities.putAll(gr.claimProbs);
+            for (var e : gr.sourceTrust.entrySet()) {
+                trustSum.merge(e.getKey(), e.getValue(), Double::sum);
+                trustCount.merge(e.getKey(), 1, Integer::sum);
             }
+        }
+
+        for (String src : trustSum.keySet()) {
+            sourceTrust.put(src, trustSum.get(src) / trustCount.getOrDefault(src, 1));
         }
 
         buildResult();
         printResults();
     }
 
-    private void initialize(List<Claim> claims) {
-        for (Claim c : claims) {
-            claimProbabilities.put(c, 0.5);  // initial belief
-            sourceTrust.put(c.source, 0.9);  // optimistic start
-        }
-    }
-
-    private Map<Claim, Double> estimateTruths(List<Claim> claims) {
+    private Map<Claim, Double> estimateTruths(List<Claim> claims, Map<String, Double> trust) {
         Map<Claim, Double> updated = new HashMap<>();
         for (Claim c : claims) {
             double prodTrue = 1.0;
@@ -48,7 +51,7 @@ public class TruthDiscoveryEngineEM {
 
             for (Claim other : claims) {
                 if (other.fromApp.equals(c.fromApp) && other.toApp.equals(c.toApp)) {
-                    double ts = sourceTrust.getOrDefault(other.source, 0.5);
+                    double ts = trust.getOrDefault(other.source, 0.5);
                     if (other.exists) {
                         prodTrue  *= Math.pow(ts, other.confidence);
                         prodFalse *= Math.pow(1.0 - ts, other.confidence);
@@ -85,18 +88,58 @@ public class TruthDiscoveryEngineEM {
         return trust;
     }
 
-    private boolean hasConverged(Map<Claim, Double> newProbs, Map<String, Double> newTrust) {
+    private boolean hasConverged(Map<Claim, Double> oldProbs,
+                                 Map<String, Double> oldTrust,
+                                 Map<Claim, Double> newProbs,
+                                 Map<String, Double> newTrust) {
         for (Claim c : newProbs.keySet()) {
-            if (Math.abs(newProbs.get(c) - claimProbabilities.getOrDefault(c, 0.0)) > CONVERGENCE_THRESHOLD) {
+            if (Math.abs(newProbs.get(c) - oldProbs.getOrDefault(c, 0.0)) > CONVERGENCE_THRESHOLD) {
                 return false;
             }
         }
         for (String s : newTrust.keySet()) {
-            if (Math.abs(newTrust.get(s) - sourceTrust.getOrDefault(s, 0.0)) > CONVERGENCE_THRESHOLD) {
+            if (Math.abs(newTrust.get(s) - oldTrust.getOrDefault(s, 0.0)) > CONVERGENCE_THRESHOLD) {
                 return false;
             }
         }
         return true;
+    }
+
+    private static class GroupResult {
+        Map<Claim, Double> claimProbs = new HashMap<>();
+        Map<String, Double> sourceTrust = new HashMap<>();
+    }
+
+    private GroupResult runGroupEM(List<Claim> group) {
+        GroupResult res = new GroupResult();
+        Map<Claim, Double> claimProbs = new HashMap<>();
+        Map<String, Double> trust = new HashMap<>();
+
+        for (Claim c : group) {
+            claimProbs.put(c, 0.5);
+            trust.put(c.source, 0.9);
+        }
+        trustHistory.add(new HashMap<>(trust));
+
+        for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
+            Map<Claim, Double> newProbs = estimateTruths(group, trust);
+            Map<String, Double> newTrust = updateTrustworthiness(group, newProbs);
+
+            if (hasConverged(claimProbs, trust, newProbs, newTrust)) {
+                claimProbs = newProbs;
+                trust = newTrust;
+                trustHistory.add(new HashMap<>(trust));
+                break;
+            }
+
+            claimProbs = newProbs;
+            trust = newTrust;
+            trustHistory.add(new HashMap<>(trust));
+        }
+
+        res.claimProbs.putAll(claimProbs);
+        res.sourceTrust.putAll(trust);
+        return res;
     }
 
     private void printResults() {
