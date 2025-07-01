@@ -17,7 +17,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - ArchiMate XML and GraphML exports for visualization
 - JSON graph export for web visualizers
 - CSV summaries of dependencies and edges
-- Multi-sheet Excel audit workbook export
+- Multi-sheet Excel audit workbook export (8-stage pipeline)
 - Interactive web dashboard
 - Console histograms summarize dependency fan-in and fan-out
 - Dependency metrics and analytics
@@ -33,6 +33,8 @@ are taken from the Git history and use the `+03:00` timezone recorded there.
   - Introduced `ExcelExporter.java` and supporting Maven dependencies to generate
     `application_dependency_audit.xlsx` from EM results.
   - Allows auditors to review dependency evidence in a structured workbook.
+- **2025-07-01 13:03** – *Excel workbook pipeline*
+  - Excel export now produces eight sheets showing each processing stage.
 
 - **2025-07-01 01:15** – *Interactive web dashboard*
   - Added `DashboardExporter.java` with a bundled `index.html` for local graph
