@@ -45,6 +45,20 @@ public class Main {
         Map<InitialAggregator.Pair, Double> initialAgg = InitialAggregator.aggregate(allClaims);
         Map<String, Integer> coverage = CoverageUtil.computeCoverage(allClaims);
 
+        // Detect conflicting claim groups before EM
+        List<Claim> combined = new ArrayList<>(allClaims);
+        combined.addAll(negativeClaims);
+        List<ConflictDetector.ConflictGroup> conflictGroups = ConflictDetector.detect(combined);
+        long conflictCount = conflictGroups.stream().filter(g -> g.conflicted).count();
+        System.out.println("Detected " + conflictCount + " conflicted claim groups.");
+        for (ConflictDetector.ConflictGroup g : conflictGroups) {
+            if (!g.conflicted) continue;
+            System.out.println("❗ Conflict for " + g.pair.from + " -> " + g.pair.to);
+            for (Claim c : g.claims) {
+                System.out.println("   " + c.source + " says exists=" + c.exists);
+            }
+        }
+
         // Resolve conflicting claims using the latent credibility engine
             TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
             engine.runEM(allClaims);
