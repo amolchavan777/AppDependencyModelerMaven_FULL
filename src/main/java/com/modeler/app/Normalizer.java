@@ -21,6 +21,8 @@ public class Normalizer {
         claims.addAll(ConfigFileAdapter.parse("raw_scanner_data/config.ini"));
         claims.addAll(ApplicationLogAdapter.parse("raw_scanner_data/application.log"));
         claims.addAll(CodeDependencyAdapter.parse("raw_scanner_data/code_dependencies.txt"));
+        // Database mappings provide 1:1 relationships for negative claim testing
+        claims.addAll(DatabaseConfigAdapter.parse("raw_scanner_data/db_config.txt"));
         claims.addAll(OpenTelemetryAdapter.parse("raw_scanner_data/otel_traces.json"));
         claims.addAll(GitlabCiAdapter.parse("raw_scanner_data/gitlab_pipeline.log"));
         claims.addAll(ApiSpecAdapter.parse("raw_scanner_data/api_spec.yaml"));

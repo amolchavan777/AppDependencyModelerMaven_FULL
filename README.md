@@ -269,6 +269,7 @@ The ArchiMate model includes:
 | `otel_traces.json` | JSON array of spans with `service` and `targetService`. |
 | `gitlab_pipeline.log` | CI/CD log lines containing `ServiceA -> ServiceB`. |
 | `api_spec.yaml` | OpenAPI spec using custom `x-calls` to denote calls. |
+| `db_config.txt` | Mapping of applications to their primary databases (`App -> DB`). |
 
 ---
 

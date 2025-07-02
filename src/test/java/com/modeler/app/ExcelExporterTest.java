@@ -42,4 +42,36 @@ public class ExcelExporterTest {
             assertEquals("m1", r.getCell(6).getStringCellValue());
         }
     }
+
+    @Test
+    public void negativeSheetIncludesType() throws Exception {
+        Claim dbClaim = new Claim("db", "WebPortal", "WebsiteDB", "default_db", true, 1.0);
+        Claim otherClaim = new Claim("log", "WebPortal", "AuthGateway", true, 1.0);
+        List<Claim> raw = List.of(dbClaim, otherClaim);
+
+        List<Claim> negative = NegativeClaimGenerator.generate(raw);
+
+        Map<String,String> normMap = Collections.emptyMap();
+        List<Claim> norm = raw;
+        List<ClaimIdentityResolver.ResolvedClaim> ids = Collections.emptyList();
+        List<ConflictDetector.ConflictGroup> conflicts = Collections.emptyList();
+        Map<InitialAggregator.Pair, Double> agg = Collections.emptyMap();
+        List<Map<String, Double>> iters = Collections.emptyList();
+        Map<String, Set<String>> deps = Collections.emptyMap();
+        Map<String, Integer> cov = Collections.emptyMap();
+
+        Path file = Files.createTempFile("exportNeg", ".xlsx");
+        ExcelExporter.export(raw, normMap, norm, ids, negative, conflicts, agg, iters, deps, cov, file.toString());
+
+        try (XSSFWorkbook wb = new XSSFWorkbook(file.toFile())) {
+            Sheet sheet = wb.getSheet("Negative Claims");
+            Row head = sheet.getRow(0);
+            assertEquals("type", head.getCell(3).getStringCellValue());
+            Row r = sheet.getRow(1);
+            assertEquals("log", r.getCell(0).getStringCellValue());
+            assertEquals("WebPortal", r.getCell(1).getStringCellValue());
+            assertEquals("WebsiteDB", r.getCell(2).getStringCellValue());
+            assertEquals("default_db", r.getCell(3).getStringCellValue());
+        }
+    }
 }
