@@ -105,6 +105,7 @@ public class Main {
                     negativeClaims,
                     initialAgg,
                     engine.getTrustHistory(),
+                    engine.getClaimProbabilities(),
                     result,
                     coverage,
                     "output/application_dependency_audit.xlsx");

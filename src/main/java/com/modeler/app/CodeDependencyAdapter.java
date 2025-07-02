@@ -25,7 +25,12 @@ public class CodeDependencyAdapter {
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains("->")) {
+                if (line.contains("=>")) {
+                    String[] parts = line.split("=>");
+                    String fromApp = parts[0].trim();
+                    String toApp = parts[1].trim();
+                    claims.add(new Claim("Code", fromApp, toApp, "default_db", true, 0.9));
+                } else if (line.contains("->")) {
                     String[] parts = line.split("->");
                     String fromApp = parts[0].trim();
                     String toApp = parts[1].trim();

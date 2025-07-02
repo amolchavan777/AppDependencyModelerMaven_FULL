@@ -1,34 +1,12 @@
 [
-  {
-    "traceId": "1f3a5a9b",
-    "spanId": "span01",
-    "name": "GET /customers",
-    "service": "WebPortal",
-    "targetService": "CustomerService",
-    "duration_ms": 102
-  },
-  {
-    "traceId": "1f3a5a9b",
-    "spanId": "span02",
-    "name": "POST /authenticate",
-    "service": "MobileClient",
-    "targetService": "AuthGateway",
-    "duration_ms": 87
-  },
-  {
-    "traceId": "9c8e7d4a",
-    "spanId": "span03",
-    "name": "POST /notify",
-    "service": "NotificationEngine",
-    "targetService": "RabbitMQ",
-    "duration_ms": 260
-  },
-  {
-    "traceId": "d4c2f8b1",
-    "spanId": "span04",
-    "name": "GET /report",
-    "service": "AdminConsole",
-    "targetService": "AnalyticsEngine",
-    "duration_ms": 180
-  }
+  {"traceId": "a1", "spanId": "span01", "name": "GET /accounts", "service": "WebPortal", "targetService": "CustomerService", "duration_ms": 120},
+  {"traceId": "a1", "spanId": "span02", "name": "POST /login", "service": "MobileClient", "targetService": "AuthGateway", "duration_ms": 70},
+  {"traceId": "b2", "spanId": "span03", "name": "POST /transfer", "service": "PaymentGateway", "targetService": "CoreBanking", "duration_ms": 190},
+  {"traceId": "c3", "spanId": "span04", "name": "GET /risk", "service": "CreditRiskEngine", "targetService": "FraudService", "duration_ms": 210},
+  {"traceId": "d4", "spanId": "span05", "name": "CALL /settle", "service": "SettlementService", "targetService": "PaymentGateway", "duration_ms": 110},
+  {"traceId": "e5", "spanId": "span06", "name": "GET /notify", "service": "NotificationEngine", "targetService": "RabbitMQ", "duration_ms": 140},
+  {"traceId": "f6", "spanId": "span07", "name": "GET /loan-status", "service": "LoanService", "targetService": "CoreBanking", "duration_ms": 160},
+  {"traceId": "g7", "spanId": "span08", "name": "CHECK /balance", "service": "ATMController", "targetService": "CoreBanking", "duration_ms": 130},
+  {"traceId": "h8", "spanId": "span09", "name": "GET /report", "service": "AdminConsole", "targetService": "AnalyticsEngine", "duration_ms": 180},
+  {"traceId": "i9", "spanId": "span10", "name": "GET /rates", "service": "ExchangeService", "targetService": "RateProvider", "duration_ms": 99}
 ]

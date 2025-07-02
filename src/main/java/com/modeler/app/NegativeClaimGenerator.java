@@ -44,9 +44,10 @@ public class NegativeClaimGenerator {
                 String key = source + "|" + pair.from + "|" + pair.to;
                 if (existing.contains(key)) continue; // source already has claim
                 String type = pairTypes.getOrDefault(pair, "calls");
-                if (classifier.classify(type) == Multiplicity.ONE_TO_ONE) {
-                    negatives.add(new Claim(source, pair.from, pair.to, type, false, 1.0));
-                }
+                // Generate a negative claim whenever the source observed the from-app
+                // but did not report this particular dependency, regardless of
+                // relationship multiplicity.
+                negatives.add(new Claim(source, pair.from, pair.to, type, false, 1.0));
             }
         }
         return negatives;
