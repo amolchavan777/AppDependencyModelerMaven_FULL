@@ -158,12 +158,14 @@ public class ExcelExporter {
         negHead.createCell(0).setCellValue("source");
         negHead.createCell(1).setCellValue("fromApp");
         negHead.createCell(2).setCellValue("toApp");
+        negHead.createCell(3).setCellValue("type");
         row = 1;
         for (Claim c : negativeClaims) {
             Row nr = negSheet.createRow(row++);
             nr.createCell(0).setCellValue(c.source);
             nr.createCell(1).setCellValue(c.fromApp);
             nr.createCell(2).setCellValue(c.toApp);
+            nr.createCell(3).setCellValue(c.type);
         }
 
         // Conflict groups sheet (8)
