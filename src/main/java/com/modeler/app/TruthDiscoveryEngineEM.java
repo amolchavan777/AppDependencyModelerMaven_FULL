@@ -10,11 +10,14 @@ public class TruthDiscoveryEngineEM {
     private Map<Claim, Double> claimProbabilities = new HashMap<>();
     private Map<String, Double> sourceTrust = new HashMap<>();
     private final List<Map<String, Double>> trustHistory = new ArrayList<>();
+    // store claims whose final confidence does not exceed the acceptance threshold
+    private final List<Claim> rejectedClaims = new ArrayList<>();
 
     public void runEM(List<Claim> claims) {
         claimProbabilities.clear();
         sourceTrust.clear();
         trustHistory.clear();
+        rejectedClaims.clear();
 
         Map<String, List<Claim>> groups = new LinkedHashMap<>();
         for (Claim c : claims) {
@@ -145,8 +148,18 @@ public class TruthDiscoveryEngineEM {
     private void printResults() {
         System.out.println("Final claim truth scores:");
         for (Map.Entry<Claim, Double> e : claimProbabilities.entrySet()) {
-            if (e.getValue() > 0.5) {
-                System.out.printf("%s -> %s [%.3f] via %s%n", e.getKey().fromApp, e.getKey().toApp, e.getValue(), e.getKey().source);
+            Claim c = e.getKey();
+            double score = e.getValue();
+            if (score > 0.5) {
+                System.out.printf("%s -> %s [%.3f] via %s%n", c.fromApp, c.toApp, score, c.source);
+            } else {
+                rejectedClaims.add(c);
+                System.out.println(
+                    "Rejected claim – FromApp=" + c.fromApp +
+                    ", ToApp=" + c.toApp +
+                    ", Source=" + c.source +
+                    ", Confidence=" + String.format("%.3f", score)
+                );
             }
         }
         System.out.println("\nFinal source trust scores:");
@@ -194,5 +207,12 @@ public class TruthDiscoveryEngineEM {
      */
     public List<Map<String, Double>> getTrustHistory() {
         return trustHistory;
+    }
+
+    /**
+     * Claims that were rejected because their inferred confidence was <= 0.5.
+     */
+    public List<Claim> getRejectedClaims() {
+        return rejectedClaims;
     }
 }

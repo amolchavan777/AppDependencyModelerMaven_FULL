@@ -7,11 +7,13 @@ import org.apache.poi.ss.usermodel.Row;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.io.FileOutputStream;
 import java.util.*;
 
 // Additional model classes for new export parameters
 import com.modeler.app.ClaimIdentityResolver;
 import com.modeler.app.ConflictDetector;
+import com.modeler.app.TruthDiscoveryEngineEM;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,6 +74,49 @@ public class ExcelExporterTest {
             assertEquals("WebPortal", r.getCell(1).getStringCellValue());
             assertEquals("WebsiteDB", r.getCell(2).getStringCellValue());
             assertEquals("default_db", r.getCell(3).getStringCellValue());
+        }
+    }
+
+    @Test
+    public void rejectedClaimsSheetWritten() throws Exception {
+        List<Claim> claims = List.of(
+                new Claim("s1", "A", "B", true, 1.0),
+                new Claim("s2", "A", "B", false, 1.0)
+        );
+
+        TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
+        engine.runEM(claims);
+
+        Path file = Files.createTempFile("rejected", ".xlsx");
+        try (XSSFWorkbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("Rejected Claims");
+            Row head = sheet.createRow(0);
+            head.createCell(0).setCellValue("FromApp");
+            head.createCell(1).setCellValue("ToApp");
+            head.createCell(2).setCellValue("Source");
+            head.createCell(3).setCellValue("Confidence");
+
+            int row = 1;
+            for (Claim c : engine.getRejectedClaims()) {
+                Row r = sheet.createRow(row++);
+                r.createCell(0).setCellValue(c.fromApp);
+                r.createCell(1).setCellValue(c.toApp);
+                r.createCell(2).setCellValue(c.source);
+                double score = engine.getClaimProbabilities().getOrDefault(c, 0.0);
+                r.createCell(3).setCellValue(String.format("%.3f", score));
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(file.toFile())) {
+                wb.write(fos);
+            }
+        }
+
+        try (XSSFWorkbook wb = new XSSFWorkbook(file.toFile())) {
+            Sheet sheet = wb.getSheet("Rejected Claims");
+            assertNotNull(sheet, "Sheet should exist");
+            Row header = sheet.getRow(0);
+            assertEquals("FromApp", header.getCell(0).getStringCellValue());
+            assertEquals("Confidence", header.getCell(3).getStringCellValue());
         }
     }
 }
