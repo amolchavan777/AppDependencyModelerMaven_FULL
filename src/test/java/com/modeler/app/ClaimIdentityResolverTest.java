@@ -21,8 +21,8 @@ public class ClaimIdentityResolverTest {
 
         Map<String,String> idBySource = new HashMap<>();
         for (ClaimIdentityResolver.ResolvedClaim rc : resolved) {
-            idBySource.put(rc.claim.source, rc.id());
-            if (rc.claim.source.equals("s1")) {
+            idBySource.put(rc.claim().source, rc.id());
+            if (rc.claim().source.equals("s1")) {
                 assertEquals("WebPortal", rc.from(), "Alias should be normalized");
             }
         }
