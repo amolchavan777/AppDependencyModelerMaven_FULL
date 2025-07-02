@@ -146,9 +146,9 @@ public class ExcelExporter {
             ir.createCell(0).setCellValue(rc.id());
             ir.createCell(1).setCellValue(rc.from());
             ir.createCell(2).setCellValue(rc.to());
-            ir.createCell(3).setCellValue(rc.claim.source);
-            ir.createCell(4).setCellValue(rc.claim.exists);
-            ir.createCell(5).setCellValue(rc.claim.confidence);
+            ir.createCell(3).setCellValue(rc.claim().source);
+            ir.createCell(4).setCellValue(rc.claim().exists);
+            ir.createCell(5).setCellValue(rc.claim().confidence);
         }
 
         // Negative claims sheet (7)
