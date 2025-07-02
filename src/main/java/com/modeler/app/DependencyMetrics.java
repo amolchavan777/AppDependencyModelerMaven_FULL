@@ -20,7 +20,9 @@ public class DependencyMetrics {
         Map<String, Integer> incomingCount = new HashMap<>();
         for (String app : allApps) {
             outgoingCount.put(app, result.getOrDefault(app, Collections.emptySet()).size());
+            System.out.println();
             incomingCount.put(app, 0);
+            System.out.println();
         }
         for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
             for (String target : entry.getValue()) {
@@ -31,8 +33,8 @@ public class DependencyMetrics {
         List<String> noOutgoing = new ArrayList<>();
         List<String> noIncoming = new ArrayList<>();
         for (String app : allApps) {
-            if (outgoingCount.get(app) == 0) noOutgoing.add(app);
-            if (incomingCount.get(app) == 0) noIncoming.add(app);
+            if (outgoingCount.get(app) == 0) noOutgoing.add(app); System.out.println();
+            if (incomingCount.get(app) == 0) noIncoming.add(app); System.out.println();
         }
 
         String maxOutApp = null, maxInApp = null;
@@ -45,12 +47,19 @@ public class DependencyMetrics {
         }
 
         System.out.println("\n\uD83D\uDCCA Dependency Metrics:");
-        System.out.println("Outgoing dependencies (fan-out) per app: " + outgoingCount);
-        System.out.println("Incoming dependencies (fan-in) per app: " + incomingCount);
-        System.out.println("Apps with no outgoing deps: " + (noOutgoing.isEmpty() ? "None" : noOutgoing));
-        System.out.println("Apps with no incoming deps: " + (noIncoming.isEmpty() ? "None" : noIncoming));
-        System.out.println("Highest fan-out: " + maxOutApp + " (" + maxOut + " outgoing links)");
-        System.out.println("Highest fan-in: " + maxInApp + " (" + maxIn + " incoming links)");
+        System.out.println("\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Outgoing dependencies (fan-out) per app: \n" + outgoingCount+"\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Incoming dependencies (fan-in) per app: \n" + incomingCount+"\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Apps with no outgoing deps: \n" + (noOutgoing.isEmpty() ? "None" : noOutgoing)+"\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Apps with no incoming deps: \n" + (noIncoming.isEmpty() ? "None" : noIncoming)+"\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+        System.out.println("Highest fan-out: " + maxOutApp + " (" + maxOut + " outgoing links)\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+        System.out.println("Highest fan-in: " + maxInApp + " (" + maxIn + " incoming links)\n");
+        System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 
         List<Set<String>> clusters = findClusters(result, allApps);
         if (clusters.size() > 1) {
@@ -59,6 +68,7 @@ public class DependencyMetrics {
                 System.out.println("Cluster " + idx++ + ": " + cl);
             }
         }
+        System.out.println();
         System.out.println(hasCycles(result) ? "Cyclic dependencies detected" : "No cycles detected");
     }
 

@@ -39,11 +39,14 @@ public class Main {
         ClaimIdentityResolver resolver = new ClaimIdentityResolver(aliasMap);
         List<ClaimIdentityResolver.ResolvedClaim> resolved = resolver.resolve(rawClaims);
         List<Claim> negativeClaims = NegativeClaimGenerator.generate(allClaims);
+        System.out.println("\n============================================================ \n");
         System.out.println("✅ Normalized Application Dependency Claims:");
         for (Claim c : allClaims) System.out.println(c);
+        System.out.println("\n============================================================ \n");
         System.out.println("Collected " + allClaims.size() + " claims.");
+        System.out.println("\n============================================================ \n");
         System.out.println("Running Latent Truth Model with EM...\n");
-
+        System.out.println("\n============================================================ \n");
         Map<InitialAggregator.Pair, Double> initialAgg = InitialAggregator.aggregate(allClaims);
         Map<String, Integer> coverage = CoverageUtil.computeCoverage(allClaims);
 
@@ -52,6 +55,7 @@ public class Main {
         combined.addAll(negativeClaims);
         List<ConflictDetector.ConflictGroup> conflictGroups = ConflictDetector.detect(combined);
         long conflictCount = conflictGroups.stream().filter(g -> g.conflicted).count();
+        System.out.println("\n============================================================ \n");
         System.out.println("Detected " + conflictCount + " conflicted claim groups.");
         for (ConflictDetector.ConflictGroup g : conflictGroups) {
             if (!g.conflicted) continue;
@@ -60,7 +64,7 @@ public class Main {
                 System.out.println("   " + c.source + " says exists=" + c.exists);
             }
         }
-
+        System.out.println("\n============================================================ \n");
         // Resolve conflicting claims using the latent credibility engine
             TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
             engine.runEM(combined);
@@ -72,16 +76,17 @@ public class Main {
         // Or, if you want to call a run method instead of runEM:
         //engine.run(allClaims);
 
-
+System.out.println("\n=============================printDependencySummary=============================== \n");
         printDependencySummary(result);
 
         // Print dependency analytics before exporting
         DependencyMetrics.printMetrics(result);
-
+System.out.println("\n===============================printMetrics============================= \n");
         // Display simple histograms of dependency fan-out and fan-in
         DependencyHistogram.printOutgoingHistogram(result);
+        System.out.println("\n============================================================ \n");
         DependencyHistogram.printIncomingHistogram(result);
-
+System.out.println("\n============================================================ \n");
             // Export only the dependencies that survived truth discovery
             ArchimateExporter.export(result, "output/archimate_model.xml");
             System.out.println("\n📄 Archimate model exported to output/archimate_model.xml");
@@ -114,13 +119,13 @@ public class Main {
                     "output/application_dependency_audit.xlsx");
             System.out.println("📄 Excel audit workbook exported to output/application_dependency_audit.xlsx");
 
-        
+        System.out.println("\n============================================================ \n");
 
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("An error occurred: " + e.getMessage());
         }
-
+        System.out.println("\n============================================================ \n");
     }
 
     /**
@@ -130,7 +135,7 @@ public class Main {
         System.out.println("\n✅ Final Application Dependency Model:");
         List<String> apps = new ArrayList<>(deps.keySet());
         Collections.sort(apps);
-
+        System.out.println("\n============================================================ \n");
         int total = 0;
         for (String app : apps) {
             System.out.println(app);
@@ -146,7 +151,9 @@ public class Main {
                 }
             }
         }
-
+        System.out.println("\n============================================================ \n");
         System.out.printf("Summary: %d apps, %d total dependency links%n", apps.size(), total);
+        System.out.println("\n============================================================ \n");
     }
+    
 }
