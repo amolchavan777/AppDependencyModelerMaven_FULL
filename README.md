@@ -40,10 +40,10 @@ The generated `application_dependency_audit.xlsx` contains several tabs that tra
 | 3 | Normalization Mapping | Alias to canonical name mappings |
 | 4 | Alias Groups | Canonical names grouped with their aliases |
 | 5 | Normalized Claims | Claims after aliases have been resolved |
-| 6 | Claim Identities | Canonical IDs assigned to each dependency |
-| 7 | Negative Claims | Generated absence assertions |
-| 8 | Initial Aggregation | Preliminary scores before EM |
-| 9 | LTM Iterations | Trust scores for each source across EM steps |
+| 6 | Negative Claims | Missing dependencies recorded with `exists=false` |
+| 7 | Initial Aggregation | Preliminary scores before EM |
+| 8 | LTM Iterations | Trust scores for each source across EM steps |
+| 9 | Rejected Claims | Claims with probability ≤ 0.5 |
 |10 | Final Dependencies | Resolved dependency graph |
 |11 | Data Coverage | Number of evidence sources per application |
 
@@ -58,7 +58,7 @@ are taken from the Git history and use the `+03:00` timezone recorded there.
   - Allows auditors to review dependency evidence in a structured workbook.
 - **2025-07-01 18:50** – *Process flow sheet*
   - Excel workbook now includes a "Process Flow" sheet summarizing pipeline steps.
-  - Ten sheets are produced in total.
+  - Eleven sheets are produced in total.
 - **2025-07-01 13:03** – *Excel workbook pipeline*
   - Excel export now produces eight sheets showing each processing stage.
 
@@ -235,7 +235,7 @@ The ArchiMate model includes:
 | `ps_aux.txt` | Snapshot of running processes; executables under `/usr/bin/` are treated as apps. |
 | `config.ini` | INI file with `name=` and `dependencies=` entries. |
 | `application.log` | Log lines with `connected to` for runtime interactions. |
-| `code_dependencies.txt` | One `from -> to` dependency per line. |
+| `code_dependencies.txt` | One `from -> to` dependency per line. Use `=>` to denote a `default_db` (1:1) link. |
 | `otel_traces.json` | JSON array of spans with `service` and `targetService`. |
 | `gitlab_pipeline.log` | CI/CD log lines containing `ServiceA -> ServiceB`. |
 | `api_spec.yaml` | OpenAPI spec using custom `x-calls` to denote calls. |

@@ -21,7 +21,7 @@ import java.util.TreeSet;
 public class ExcelExporter {
 
     /**
-     * Export the full modeling pipeline as a nine-sheet workbook.
+     * Export the full modeling pipeline as a multi-sheet workbook.
      */
     public static void export(List<Claim> rawClaims,
                               Map<String,String> normalizationMap,
@@ -29,6 +29,7 @@ public class ExcelExporter {
                               List<Claim> negativeClaims,
                               Map<InitialAggregator.Pair, Double> initialAgg,
                               List<Map<String, Double>> ltmIterations,
+                              Map<Claim, Double> claimProbabilities,
                               Map<String, Set<String>> finalDeps,
                               Map<String, Integer> dataCoverage,
                               String filePath) throws IOException {
@@ -47,6 +48,7 @@ public class ExcelExporter {
                 "Negative Claims",
                 "Initial Aggregation",
                 "LTM Iterations",
+                "Rejected Claims",
                 "Final Dependencies",
                 "Data Coverage"
         };
@@ -172,7 +174,27 @@ public class ExcelExporter {
             }
         }
 
-        // Final dependency graph sheet (9)
+        // Rejected claims sheet (9)
+        Sheet rejSheet = wb.createSheet("Rejected Claims");
+        Row rejHead = rejSheet.createRow(0);
+        rejHead.createCell(0).setCellValue("source");
+        rejHead.createCell(1).setCellValue("fromApp");
+        rejHead.createCell(2).setCellValue("toApp");
+        rejHead.createCell(3).setCellValue("probability");
+        row = 1;
+        for (var e : claimProbabilities.entrySet()) {
+            Claim c = e.getKey();
+            double p = e.getValue();
+            if (c.exists && p <= 0.5) {
+                Row rr = rejSheet.createRow(row++);
+                rr.createCell(0).setCellValue(c.source);
+                rr.createCell(1).setCellValue(c.fromApp);
+                rr.createCell(2).setCellValue(c.toApp);
+                rr.createCell(3).setCellValue(p);
+            }
+        }
+
+        // Final dependency graph sheet (10)
         Sheet depSheet = wb.createSheet("Final Dependencies");
         Row dHead = depSheet.createRow(0);
         dHead.createCell(0).setCellValue("fromApp");
@@ -187,7 +209,7 @@ public class ExcelExporter {
             }
         }
 
-        // Data coverage sheet (10)
+        // Data coverage sheet (11)
         Sheet covSheet = wb.createSheet("Data Coverage");
         Row covHead = covSheet.createRow(0);
         covHead.createCell(0).setCellValue("application");
