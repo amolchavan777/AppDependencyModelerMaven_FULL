@@ -1,7 +1,7 @@
 package com.modeler.app;
 
-import com.modeler.app.domain.Application;
-import com.modeler.app.domain.Dependency;
+import com.enterprise.dependency.model.core.Application;
+import com.enterprise.dependency.model.core.Dependency;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
