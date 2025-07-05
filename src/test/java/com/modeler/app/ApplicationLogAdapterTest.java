@@ -1,5 +1,6 @@
 package com.modeler.app;
 
+import com.enterprise.dependency.model.core.Claim;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;

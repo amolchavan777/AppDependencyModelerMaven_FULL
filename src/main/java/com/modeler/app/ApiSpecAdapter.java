@@ -1,5 +1,6 @@
 package com.modeler.app;
 
+import com.enterprise.dependency.model.core.Claim;
 import java.io.*;
 import java.util.*;
 import org.yaml.snakeyaml.Yaml;

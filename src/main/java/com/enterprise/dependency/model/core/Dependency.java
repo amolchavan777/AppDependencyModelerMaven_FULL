@@ -1,4 +1,4 @@
-package com.modeler.app.domain;
+package com.enterprise.dependency.model.core;
 
 import java.util.Objects;
 

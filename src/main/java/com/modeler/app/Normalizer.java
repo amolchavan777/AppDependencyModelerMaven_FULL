@@ -1,5 +1,7 @@
 package com.modeler.app;
 
+import com.enterprise.dependency.model.core.Claim;
+import com.modeler.app.RouterLogAdapter;
 import java.util.*;
 import java.io.*;
 
@@ -20,6 +22,7 @@ public class Normalizer {
         claims.addAll(PsAuxAdapter.parse("raw_scanner_data/ps_aux.txt"));
         claims.addAll(ConfigFileAdapter.parse("raw_scanner_data/config.ini"));
         claims.addAll(ApplicationLogAdapter.parse("raw_scanner_data/application.log"));
+        claims.addAll(RouterLogAdapter.parse("raw_scanner_data/router.log"));
         claims.addAll(CodeDependencyAdapter.parse("raw_scanner_data/code_dependencies.txt"));
         // Database mappings provide 1:1 relationships for negative claim testing
         claims.addAll(DatabaseConfigAdapter.parse("raw_scanner_data/db_config.txt"));
