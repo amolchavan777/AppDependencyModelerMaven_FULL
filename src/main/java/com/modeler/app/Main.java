@@ -2,6 +2,9 @@ package com.modeler.app;
 
 import java.util.*;
 import java.io.*;
+import java.sql.SQLException;
+
+import com.modeler.app.PersistenceManager;
 
 // JSON export
 import com.modeler.app.JsonExporter;
@@ -87,37 +90,45 @@ System.out.println("\n===============================printMetrics===============
         System.out.println("\n============================================================ \n");
         DependencyHistogram.printIncomingHistogram(result);
 System.out.println("\n============================================================ \n");
-            // Export only the dependencies that survived truth discovery
-            ArchimateExporter.export(result, "output/archimate_model.xml");
-            System.out.println("\n📄 Archimate model exported to output/archimate_model.xml");
 
-            GraphMLExporter.export(result, "output/dependency_graph.graphml");
-            System.out.println("📄 GraphML model exported to output/dependency_graph.graphml");
+// Persist raw claims and final dependencies for later analysis
+try (PersistenceManager pm = new PersistenceManager("jdbc:h2:./output/dependencyDB")) {
+    pm.saveClaims(allClaims);
+    pm.saveDependencies(result);
+    System.out.println("\ud83d\udcc4 Results stored in output/dependencyDB.mv.db");
+} catch (SQLException se) {
+    System.err.println("Failed to persist results: " + se.getMessage());
+}
+// Export only the dependencies that survived truth discovery
+ArchimateExporter.export(result, "output/archimate_model.xml");
+System.out.println("\n\ud83d\udcc4 Archimate model exported to output/archimate_model.xml");
 
+GraphMLExporter.export(result, "output/dependency_graph.graphml");
+System.out.println("\ud83d\udcc4 GraphML model exported to output/dependency_graph.graphml");
 
-            JsonExporter.export(result, "output/dependency_graph.json");
-            System.out.println("📄 JSON graph exported to output/dependency_graph.json");
+JsonExporter.export(result, "output/dependency_graph.json");
+System.out.println("\ud83d\udcc4 JSON graph exported to output/dependency_graph.json");
 
-            DashboardExporter.export("output");
-            System.out.println("📄 Dashboard available at output/index.html");
+DashboardExporter.export("output");
+System.out.println("\ud83d\udcc4 Dashboard available at output/index.html");
 
 //codex/add-csv-export-for-dependency-summaries
-            CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");
-            System.out.println("📄 CSV summaries exported to output/dependency_*.csv");
+CsvExporter.export(result, "output/dependency_summary.csv", "output/dependency_edges.csv");
+System.out.println("\ud83d\udcc4 CSV summaries exported to output/dependency_*.csv");
 
-            // Export a multi-sheet Excel workbook for auditing
-            ExcelExporter.export(rawClaims,
-                    aliasMap,
-                    allClaims,
-                    resolved,
-                    negativeClaims,
-                    conflictGroups,
-                    initialAgg,
-                    engine.getTrustHistory(),
-                    result,
-                    coverage,
-                    "output/application_dependency_audit.xlsx");
-            System.out.println("📄 Excel audit workbook exported to output/application_dependency_audit.xlsx");
+// Export a multi-sheet Excel workbook for auditing
+ExcelExporter.export(rawClaims,
+        aliasMap,
+        allClaims,
+        resolved,
+        negativeClaims,
+        conflictGroups,
+        initialAgg,
+        engine.getTrustHistory(),
+        result,
+        coverage,
+        "output/application_dependency_audit.xlsx");
+System.out.println("\ud83d\udcc4 Excel audit workbook exported to output/application_dependency_audit.xlsx");
 
         System.out.println("\n============================================================ \n");
 
