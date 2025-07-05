@@ -5,23 +5,6 @@ import java.util.*;
 import java.io.*;
 import java.sql.SQLException;
 
-import com.modeler.app.PersistenceManager;
-
-// JSON export
-import com.modeler.app.JsonExporter;
-import com.modeler.app.DashboardExporter;
-import com.modeler.app.ExcelExporter;
-import com.modeler.app.InitialAggregator;
-import com.modeler.app.CoverageUtil;
-import com.modeler.app.NegativeClaimGenerator;
-
-
-// Histogram utilities
-import com.modeler.app.DependencyHistogram;
-
-// For calculating and printing dependency graph metrics
-import com.modeler.app.DependencyMetrics;
-
 
 /**
  * Entry point for the Application Dependency Modeler demo. It collects data
@@ -30,6 +13,8 @@ import com.modeler.app.DependencyMetrics;
  */
 
 public class Main {
+
+    private static final String SEPARATOR = "\n============================================================ \n";
 
     /**
      * Command-line execution.
@@ -74,11 +59,6 @@ public class Main {
             engine.runEM(combined);
 
        Map<String, Set<String>> result = engine.getResult();
-        // If you want to use a run method with a specific number of iterations, you can add:
-         //engine.run(allClaims, 10); // for example, 10 EM iterations
-
-        // Or, if you want to call a run method instead of runEM:
-        //engine.run(allClaims);
 
 System.out.println("\n=============================printDependencySummary=============================== \n");
         printDependencySummary(result);
