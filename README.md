@@ -27,6 +27,7 @@ This system gathers dependency data from a wide variety of realistic sources (lo
 - High-confidence filtering via FilteredModelExporter
 - Pluggable adapter system
 - Rich sample dataset included
+- Optional H2 database persistence for claims and results
 - Maven project structure
 
 ## 🔄 Revamped Modeling Flow
@@ -207,6 +208,8 @@ output/index.html
 ```
 
 The console also prints ASCII histograms summarizing outgoing and incoming dependency counts per application.
+
+If the H2 dependency is on the classpath, results are persisted to `output/dependencyDB.mv.db` for later inspection using any JDBC tool.
 
 You can import the ArchiMate XML into tools like **Archi** or **BiZZdesign**.
 The GraphML file works with graph tools such as **yEd** or **Gephi**.

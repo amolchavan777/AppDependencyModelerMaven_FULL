@@ -2,6 +2,9 @@ package com.modeler.app;
 
 import java.util.*;
 import java.io.*;
+import java.sql.SQLException;
+
+import com.modeler.app.PersistenceManager;
 
 // JSON export
 import com.modeler.app.JsonExporter;
@@ -81,6 +84,15 @@ public class Main {
         // Display simple histograms of dependency fan-out and fan-in
         DependencyHistogram.printOutgoingHistogram(result);
         DependencyHistogram.printIncomingHistogram(result);
+
+        // Persist raw claims and final dependencies for later analysis
+        try (PersistenceManager pm = new PersistenceManager("jdbc:h2:./output/dependencyDB")) {
+            pm.saveClaims(allClaims);
+            pm.saveDependencies(result);
+            System.out.println("📄 Results stored in output/dependencyDB.mv.db");
+        } catch (SQLException se) {
+            System.err.println("Failed to persist results: " + se.getMessage());
+        }
 
             // Export only the dependencies that survived truth discovery
             ArchimateExporter.export(result, "output/archimate_model.xml");
