@@ -294,7 +294,11 @@ async function setStrategy() {
         
         // Wait a moment for backend processing, then refresh data
         setTimeout(async () => {
-            await Promise.all([fetchAnalytics(), fetchMetrics()]);
+            await Promise.all([
+                fetchAnalytics(),
+                fetchMetrics(),
+                loadDependencyGraph()
+            ]);
             updateStatus('success', `Strategy changed to ${strategy.toUpperCase()}`);
         }, 1000);
         
