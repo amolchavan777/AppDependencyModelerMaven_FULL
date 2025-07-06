@@ -4,36 +4,404 @@
 <meta charset="UTF-8">
 <title>Application Dependency Dashboard</title>
 <style>
-  body { font-family: Arial, sans-serif; }
+  body { font-family: Arial, sans-serif; margin: 20px; }
   #cy {
     width: 100%;
-    height: 600px;
+    height: 400px;
     border: 1px solid #ccc;
+    margin-bottom: 2em;
+  }
+  .section { margin-bottom: 2em; }
+  .status-indicator {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+  .status-loading { background-color: #ffeaa7; color: #2d3436; }
+  .status-success { background-color: #00b894; color: white; }
+  .status-error { background-color: #e17055; color: white; }
+  .refresh-button {
+    background-color: #0984e3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .refresh-button:hover { background-color: #74b9ff; }
+  .loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ddd;
+    border-top: 2px solid #0984e3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
 <script src="https://unpkg.com/cytoscape@3.27.0/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<h1>Application Dependency Graph</h1>
+<h1>Application Dependency Modeler Dashboard
+    <span id="statusIndicator" class="status-indicator status-loading">Initializing...</span>
+    <button class="refresh-button" onclick="refreshDashboard()">🔄 Refresh</button>
+</h1>
+<div class="section">
+    <label for="strategy">Truth Discovery Strategy:</label>
+    <select id="strategy">
+        <option value="em">Expectation-Maximization (EM)</option>
+        <option value="majority">Majority Voting</option>
+        <option value="weighted">Weighted Voting</option>
+    </select>
+    <button onclick="setStrategy()">Apply</button>
+    <label style="margin-left: 20px;">
+        <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+        Auto-refresh (30s)
+    </label>
+</div>
+<div class="section">
+    <h2>Source Reliability</h2>
+    <canvas id="reliabilityChart" width="400" height="200"></canvas>
+</div>
+<div class="section">
+    <h2>Claim Confidence</h2>
+    <table id="claimTable" border="1" style="border-collapse: collapse;">
+        <thead><tr><th style="padding: 8px;">Claim</th><th style="padding: 8px;">Confidence</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div class="section">
+    <h2>Application Dependency Metrics</h2>
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <h3>Fan-Out (Outgoing Dependencies)</h3>
+            <canvas id="fanOutChart" width="400" height="300"></canvas>
+        </div>
+        <div style="flex: 1;">
+            <h3>Fan-In (Incoming Dependencies)</h3>
+            <canvas id="fanInChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+    <div style="margin-top: 20px;">
+        <h3>Combined Metrics Table</h3>
+        <table id="metricsTable" border="1" style="border-collapse: collapse;">
+            <thead><tr><th style="padding: 8px;">Application</th><th style="padding: 8px;">Fan-Out</th><th style="padding: 8px;">Fan-In</th><th style="padding: 8px;">Total</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="section">
+    <h2>Add Source/Claim</h2>
+    <form id="addForm" onsubmit="addClaim(event)">
+        <input type="text" id="source" placeholder="Source" required>
+        <input type="text" id="claim" placeholder="Claim (e.g., AppA->AppB)" required>
+        <input type="text" id="exists" placeholder="Exists (true/false)" required>
+        <button type="submit">Add</button>
+    </form>
+</div>
+<h2>Dependency Graph</h2>
 <div id="cy"></div>
 <script>
-fetch('dependency_graph.json')
-  .then(res => res.json())
-  .then(data => {
-    const elements = [];
-    data.nodes.forEach(n => elements.push({ data: { id: n.id, label: n.id } }));
-    data.edges.forEach(e => elements.push({ data: { source: e.source, target: e.target } }));
+// Global state management
+let refreshInterval = null;
+let autoRefreshEnabled = false;
 
-    cytoscape({
-      container: document.getElementById('cy'),
-      elements: elements,
-      style: [
-        { selector: 'node', style: { 'label': 'data(label)', 'background-color': '#0074D9', 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center' } },
-        { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'width': 2, 'line-color': '#aaa', 'target-arrow-color': '#aaa' } }
-      ],
-      layout: { name: 'cose' }
-    });
-  });
+// Status management
+function updateStatus(status, message) {
+    const indicator = document.getElementById('statusIndicator');
+    indicator.className = `status-indicator status-${status}`;
+    indicator.textContent = message;
+}
+
+// Enhanced error handling
+function handleError(error, operation) {
+    console.error(`Error during ${operation}:`, error);
+    updateStatus('error', `Error: ${operation} failed`);
+}
+
+// Dependency Graph with enhanced error handling
+function loadDependencyGraph() {
+    return fetch('http://localhost:4567/api/graph')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        const elements = [];
+        data.nodes.forEach(n => elements.push({ data: { id: n.id, label: n.id } }));
+        data.edges.forEach(e => elements.push({ data: { source: e.from, target: e.to } }));
+        cytoscape({
+          container: document.getElementById('cy'),
+          elements: elements,
+          style: [
+            { selector: 'node', style: { 'label': 'data(label)', 'background-color': '#0074D9', 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center' } },
+            { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'width': 2, 'line-color': '#aaa', 'target-arrow-color': '#aaa' } }
+          ],
+          layout: { name: 'cose' }
+        });
+        console.log('Dependency graph loaded successfully');
+      })
+      .catch(error => handleError(error, 'loading dependency graph'));
+}
+// Analytics with enhanced error handling
+async function fetchAnalytics() {
+    try {
+        const res = await fetch('http://localhost:4567/api/analytics');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        
+        // Update reliability chart
+        const ctx = document.getElementById('reliabilityChart').getContext('2d');
+        if(window.reliabilityChart && typeof window.reliabilityChart.destroy === 'function') window.reliabilityChart.destroy();
+        window.reliabilityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.reliability.map(r => r.source),
+                datasets: [{ 
+                    label: 'Reliability', 
+                    data: data.reliability.map(r => r.score),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true, max: 1 } },
+                plugins: { 
+                    legend: { display: false },
+                    title: { display: true, text: 'Source Reliability Scores' }
+                }
+            }
+        });
+        
+        // Update claim table
+        const tbody = document.getElementById('claimTable').querySelector('tbody');
+        tbody.innerHTML = '';
+        data.claims.forEach(c => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="padding: 8px;">${c.claim}</td><td style="padding: 8px;">${c.confidence.toFixed(2)}</td>`;
+            tbody.appendChild(tr);
+        });
+        
+        console.log('Analytics data loaded successfully');
+    } catch (error) {
+        handleError(error, 'fetching analytics');
+    }
+}
+
+// Fetch and display metrics with enhanced error handling
+async function fetchMetrics() {
+    try {
+        const res = await fetch('http://localhost:4567/api/metrics');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        
+        // Sort by total dependencies (fan-in + fan-out) for better visualization
+        const sortedMetrics = data.metrics.sort((a, b) => (b.fanIn + b.fanOut) - (a.fanIn + a.fanOut));
+        
+        // Update fan-out chart
+        const fanOutCtx = document.getElementById('fanOutChart').getContext('2d');
+        if(window.fanOutChart && typeof window.fanOutChart.destroy === 'function') window.fanOutChart.destroy();
+        window.fanOutChart = new Chart(fanOutCtx, {
+            type: 'bar',
+            data: {
+                labels: sortedMetrics.map(m => m.application),
+                datasets: [{
+                    label: 'Outgoing Dependencies',
+                    data: sortedMetrics.map(m => m.fanOut),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                plugins: { 
+                    legend: { display: false },
+                    title: { display: true, text: 'Fan-Out Dependencies' }
+                }
+            }
+        });
+        
+        // Update fan-in chart
+        const fanInCtx = document.getElementById('fanInChart').getContext('2d');
+        if(window.fanInChart && typeof window.fanInChart.destroy === 'function') window.fanInChart.destroy();
+        window.fanInChart = new Chart(fanInCtx, {
+            type: 'bar',
+            data: {
+                labels: sortedMetrics.map(m => m.application),
+                datasets: [{
+                    label: 'Incoming Dependencies',
+                    data: sortedMetrics.map(m => m.fanIn),
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                plugins: { 
+                    legend: { display: false },
+                    title: { display: true, text: 'Fan-In Dependencies' }
+                }
+            }
+        });
+        
+        // Update metrics table
+        const metricsTableBody = document.getElementById('metricsTable').querySelector('tbody');
+        metricsTableBody.innerHTML = '';
+        sortedMetrics.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="padding: 8px;">${m.application}</td><td style="padding: 8px;">${m.fanOut}</td><td style="padding: 8px;">${m.fanIn}</td><td style="padding: 8px;">${m.fanIn + m.fanOut}</td>`;
+            metricsTableBody.appendChild(tr);
+        });
+        
+        console.log('Metrics data loaded successfully');
+    } catch (error) {
+        handleError(error, 'fetching metrics');
+    }
+}
+
+// Enhanced strategy change with user feedback
+async function setStrategy() {
+    const strategy = document.getElementById('strategy').value;
+    const button = event.target;
+    const originalText = button.textContent;
+    
+    try {
+        button.disabled = true;
+        button.innerHTML = '<span class="loading-spinner"></span>Applying...';
+        updateStatus('loading', 'Applying strategy change...');
+        
+        const res = await fetch('http://localhost:4567/api/strategy', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ strategy }) 
+        });
+        
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
+        updateStatus('loading', 'Recomputing model...');
+        
+        // Wait a moment for backend processing, then refresh data
+        setTimeout(async () => {
+            await Promise.all([fetchAnalytics(), fetchMetrics()]);
+            updateStatus('success', `Strategy changed to ${strategy.toUpperCase()}`);
+        }, 1000);
+        
+    } catch (error) {
+        handleError(error, 'changing strategy');
+    } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+// Enhanced add claim with user feedback
+async function addClaim(e) {
+    e.preventDefault();
+    const source = document.getElementById('source').value;
+    const claim = document.getElementById('claim').value;
+    const exists = document.getElementById('exists').value;
+    
+    try {
+        updateStatus('loading', 'Adding claim...');
+        
+        const res = await fetch('http://localhost:4567/api/add', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ source, claim, exists }) 
+        });
+        
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
+        await Promise.all([fetchAnalytics(), fetchMetrics()]);
+        updateStatus('success', 'Claim added successfully');
+        document.getElementById('addForm').reset();
+        
+    } catch (error) {
+        handleError(error, 'adding claim');
+    }
+}
+
+// Dashboard refresh functionality
+async function refreshDashboard() {
+    try {
+        updateStatus('loading', 'Refreshing dashboard...');
+        await Promise.all([
+            loadDependencyGraph(),
+            fetchAnalytics(),
+            fetchMetrics()
+        ]);
+        updateStatus('success', 'Dashboard refreshed');
+    } catch (error) {
+        handleError(error, 'refreshing dashboard');
+    }
+}
+
+// Auto-refresh functionality
+function toggleAutoRefresh() {
+    const checkbox = document.getElementById('autoRefresh');
+    if (checkbox.checked) {
+        autoRefreshEnabled = true;
+        refreshInterval = setInterval(() => {
+            if (autoRefreshEnabled) {
+                console.log('Auto-refreshing dashboard...');
+                refreshDashboard();
+            }
+        }, 30000); // 30 seconds
+        updateStatus('success', 'Auto-refresh enabled (30s)');
+    } else {
+        autoRefreshEnabled = false;
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+            refreshInterval = null;
+        }
+        updateStatus('success', 'Auto-refresh disabled');
+    }
+}
+
+// Status polling functionality
+function startStatusPolling() {
+    setInterval(async () => {
+        try {
+            const res = await fetch('http://localhost:4567/api/status');
+            if (res.ok) {
+                const statusData = await res.json();
+                updateStatus(statusData.status.toLowerCase(), statusData.lastOperation);
+            }
+        } catch (error) {
+            // Silently fail - don't spam console with status polling errors
+        }
+    }, 2000); // Poll every 2 seconds
+}
+
+// Initialize dashboard on page load
+async function initializeDashboard() {
+    updateStatus('loading', 'Loading dashboard...');
+    try {
+        loadDependencyGraph();
+        await Promise.all([fetchAnalytics(), fetchMetrics()]);
+        updateStatus('success', 'Dashboard loaded');
+    } catch (error) {
+        handleError(error, 'initializing dashboard');
+    }
+}
+
+// Initialize dashboard and start status polling
+initializeDashboard();
+startStatusPolling();
+fetchAnalytics();
+fetchMetrics();
 </script>
 </body>
 </html>

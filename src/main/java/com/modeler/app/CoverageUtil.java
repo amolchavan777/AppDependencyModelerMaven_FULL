@@ -1,5 +1,6 @@
 package com.modeler.app;
 
+import com.enterprise.dependency.model.core.Claim;
 import java.util.*;
 
 /** Utility for computing data coverage per application. */

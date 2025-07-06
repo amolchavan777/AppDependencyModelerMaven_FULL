@@ -1,5 +1,6 @@
 package com.modeler.app;
 
+import com.enterprise.dependency.model.core.Claim;
 import java.util.*;
 
 public class TruthDiscoveryEngineEM {
@@ -12,6 +13,15 @@ public class TruthDiscoveryEngineEM {
     private final List<Map<String, Double>> trustHistory = new ArrayList<>();
     // store claims whose final confidence does not exceed the acceptance threshold
     private final List<Claim> rejectedClaims = new ArrayList<>();
+    // Source weights for reliability-weighted voting
+    private Map<String, Double> sourceWeights = new HashMap<>();
+
+    /**
+     * Set initial source weights based on reliability scores
+     */
+    public void setSourceWeights(Map<String, Double> weights) {
+        this.sourceWeights = new HashMap<>(weights);
+    }
 
     public void runEM(List<Claim> claims) {
         claimProbabilities.clear();
@@ -120,7 +130,9 @@ public class TruthDiscoveryEngineEM {
 
         for (Claim c : group) {
             claimProbs.put(c, 0.5);
-            trust.put(c.source, 0.9);
+            // Use source weights if available, otherwise default to 0.9
+            double initialTrust = sourceWeights.getOrDefault(c.source, 0.9);
+            trust.put(c.source, initialTrust);
         }
         trustHistory.add(new HashMap<>(trust));
 

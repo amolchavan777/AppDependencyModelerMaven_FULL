@@ -31,6 +31,7 @@ public class RouterLogAdapter {
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null) {
+                final String currentLine = line; // Make it effectively final
                 RouterLogEntry.parse(line).ifPresent(entry -> {
                     Claim c = new Claim(
                             "RouterLog",
@@ -40,7 +41,7 @@ public class RouterLogAdapter {
                             true,
                             0.9,
                             entry.getTimestamp().toString(),
-                            line
+                            currentLine
                     );
                     claims.add(c);
                 });

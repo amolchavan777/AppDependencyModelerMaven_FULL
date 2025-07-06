@@ -2,6 +2,7 @@ package com.modeler.app;
 
 import com.enterprise.dependency.model.core.Application;
 import com.enterprise.dependency.model.core.Dependency;
+import com.enterprise.dependency.model.core.Claim;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;

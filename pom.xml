@@ -68,6 +68,12 @@
     <artifactId>h2</artifactId>
     <version>2.2.224</version>
   </dependency>
+  <!-- Spark Java for embedded web server -->
+  <dependency>
+    <groupId>com.sparkjava</groupId>
+    <artifactId>spark-core</artifactId>
+    <version>2.9.4</version>
+  </dependency>
 </dependencies>
 
   <build>
