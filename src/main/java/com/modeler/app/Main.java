@@ -26,6 +26,7 @@ public class Main {
     private static List<Claim> globalClaims;
     private static Map<String, Set<String>> globalResult;
     private static SourceReliabilityManager reliabilityManager = new SourceReliabilityManager();
+    private static String currentStrategy = "em";
 
     // Status tracking for real-time updates
     private static volatile String currentStatus = "Idle";
@@ -242,6 +243,36 @@ public class Main {
                 return mapper.writeValueAsString(getStatus());
             });
 
+            // Change truth discovery strategy
+            post("/api/strategy", (req, res) -> {
+                Map<String, String> body = mapper.readValue(req.body(), Map.class);
+                String strategy = body.getOrDefault("strategy", "em");
+                recomputeModel(strategy);
+                res.type("application/json");
+                return mapper.writeValueAsString(Map.of("status", "ok"));
+            });
+
+            // Add a new claim via dashboard
+            post("/api/add", (req, res) -> {
+                Map<String, String> body = mapper.readValue(req.body(), Map.class);
+                String source = body.getOrDefault("source", "manual");
+                String claimStr = body.getOrDefault("claim", "");
+                boolean exists = Boolean.parseBoolean(body.getOrDefault("exists", "true"));
+
+                String[] parts = claimStr.split("->");
+                if (parts.length != 2) {
+                    res.status(400);
+                    return "Invalid claim";
+                }
+                Claim claim = new Claim(source.trim(), parts[0].trim(), parts[1].trim(), exists, 1.0);
+                if (globalClaims == null) globalClaims = new ArrayList<>();
+                globalClaims.add(claim);
+                reliabilityManager.addClaim(claim);
+                recomputeModel(currentStrategy);
+                res.type("application/json");
+                return mapper.writeValueAsString(Map.of("status", "added"));
+            });
+
             // Enhanced analytics endpoint with reliability and provenance data
             get("/api/analytics", (req, res) -> {
                 res.type("application/json");
@@ -294,7 +325,7 @@ public class Main {
                 
                 result.put("reliability", reliability);
                 result.put("claims", claims);
-                result.put("strategy", "em");
+                result.put("strategy", currentStrategy);
                 return mapper.writeValueAsString(result);
             });
 
@@ -448,6 +479,32 @@ public class Main {
 
             System.out.println("🌐 Dashboard server started on http://localhost:4567");
         }).start();
+    }
+
+    private static void recomputeModel(String strategy) {
+        if (globalClaims == null) return;
+
+        updateStatus("Processing", "Recomputing model using " + strategy);
+        Map<String, Set<String>> result;
+
+        if ("majority".equalsIgnoreCase(strategy)) {
+            result = MajorityVotingResolver.resolve(globalClaims);
+            globalEngine = null;
+        } else if ("weighted".equalsIgnoreCase(strategy)) {
+            Map<String, Double> weights = reliabilityManager.getReliabilityWeights();
+            result = WeightedVotingResolver.resolve(globalClaims, weights);
+            globalEngine = null;
+        } else { // default to EM
+            TruthDiscoveryEngineEM engine = new TruthDiscoveryEngineEM();
+            engine.setSourceWeights(reliabilityManager.getReliabilityWeights());
+            engine.runEM(globalClaims);
+            globalEngine = engine;
+            result = engine.getResult();
+        }
+
+        globalResult = result;
+        currentStrategy = strategy;
+        updateStatus("Ready", "Model recomputed using " + strategy);
     }
 
     private static void printDependencySummary(Map<String, Set<String>> result) {
